@@ -25,7 +25,7 @@ button{cursor:pointer}
 #bar .logo{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.3px;margin-right:10px;white-space:nowrap}
 #bar .logo i{width:22px;height:26px;border-radius:3px;background:linear-gradient(#2c3b7a 0 0) 4px 4px/14px 3px no-repeat,linear-gradient(#ffb703 0 0) 4px 9px/14px 3px no-repeat,linear-gradient(#2c3b7a 0 0) 4px 14px/14px 3px no-repeat,linear-gradient(#5ac8fa 0 0) 4px 19px/14px 3px no-repeat,#0b1233;border:1px solid #4a5aa0}
 #bar select{background:#22306a;border:1px solid #3a4b94;color:#fff;border-radius:6px;padding:5px 8px;max-width:220px}
-@media (max-width:1500px){.tb .tx{display:none}}
+@media (max-width:1950px){.tb .tx{display:none}}
 .tb{background:transparent;border:1px solid transparent;color:#dfe5ff;border-radius:6px;padding:5px 9px;white-space:nowrap}
 .tb:hover{background:#22306a;border-color:#3a4b94}
 .tb:disabled{opacity:.35;cursor:default;background:transparent;border-color:transparent}
@@ -247,7 +247,7 @@ h4.sec{margin:14px 0 6px;font-size:12px;letter-spacing:.4px;color:var(--navy);te
 .menu button{text-align:left;padding:11px 12px;border:1px solid #dbe2f1;background:#fafbfe;border-radius:9px;font-size:14px}
 .menu button:disabled{opacity:.4}
 @media (hover:none){ .slot{background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(255,255,255,.05) 6px 7px)} .slot::after{content:"+";position:absolute;inset:0;text-align:center;color:rgba(255,183,3,.35);line-height:var(--uh);font-size:12px} }
-@media (max-width:900px){
+@media screen and (max-width:900px){
   body{font-size:14px}
   #bar{height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 8px 0;gap:4px}
   #bar .dk,#status,#bar .sep,.zoom{display:none!important}
@@ -280,13 +280,53 @@ h4.sec{margin:14px 0 6px;font-size:12px;letter-spacing:.4px;color:var(--navy);te
   .tgrid{grid-template-columns:repeat(3,1fr)}
   .mbox{padding:16px}
 }
-@media (max-width:600px){ .fwrap .desc{display:none} }
+@media screen and (max-width:600px){ .fwrap .desc{display:none} }
+
+/* v2 */
+.row3{display:grid;grid-template-columns:560px 1fr;gap:12px;margin-top:12px;align-items:start}
+.row4{margin-top:12px}
+.tw{overflow-x:auto}
+table.cab input{border:1px dashed transparent;background:transparent;padding:1px 3px;border-radius:3px}
+table.cab td{white-space:nowrap}
+.cdot{display:inline-block;width:14px;height:4px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.ok{color:#1f7a35}.wrn{color:#b26a00}.bad{color:#c0392b;font-weight:700}
+td.bad{background:#fdecec}td.wrn{background:#fff6e0}
+.st{display:inline-block;padding:0 6px;border-radius:8px;font-size:10.5px;background:#e9eef8;color:#2b3a67;white-space:nowrap}
+.st-planned{background:#e8f1ff;color:#1f4fbf}.st-active{background:#e3f6ea;color:#1f7a35}.st-faulty{background:#fdecec;color:#b42323}.st-maintenance{background:#fff4dc;color:#8a5a00}.st-removed{background:#eceef2;color:#6b7280}
+.dv.s-planned{opacity:.55;outline:1px dashed #9fc0ff;outline-offset:-1px}
+.dv.s-faulty{box-shadow:inset 0 0 0 2px #e04040}
+.dv.s-removed{opacity:.25}
+.warns{display:block}
+.warns summary{cursor:pointer;font-weight:700;color:#6b4a00;margin-bottom:4px}
+.warns .warn{margin-bottom:4px}
+.warn[data-id]{cursor:pointer}
+.warn.info{background:#eef4ff;border-color:#b9cdf3;color:#1f3f8f}
+.btn.small{padding:3px 9px;font-size:12px}
+.tblock{display:grid;grid-template-columns:170px 360px 1fr;border:1.8px solid #1d2433;margin-top:14px;font-size:11px;background:#fff}
+.tbc{border:1px solid #9aa3b5;padding:3px 7px;display:flex;flex-direction:column;justify-content:center;min-height:34px}
+.tbc span{font-size:8.5px;color:#5d6880;text-transform:uppercase;letter-spacing:.3px}
+.tbc b{font-size:12px;font-weight:700;color:#141a3a}
+.tbc.logo{align-items:center;text-align:center}
+.tbgrid{display:grid;grid-template-columns:repeat(4,1fr)}
+.tbc.w2{grid-column:span 2}
+.tbrev{border:1px solid #9aa3b5}
+.tbrev table{width:100%;border-collapse:collapse;font-size:10.5px}
+.tbrev th,.tbrev td{border:1px solid #c7d1e6;padding:2px 5px;text-align:left}
+.tbrev th{background:#eef2fb;font-size:9.5px;text-transform:uppercase;color:#1b2c72}
+.tabs{display:flex;gap:4px;margin:-4px 0 12px;flex-wrap:wrap}
+.tabb{border:1px solid #d4dcef;background:#f4f7fd;border-radius:7px;padding:5px 11px;font-size:12.5px}
+.tabb.on{background:#2448a8;color:#fff;border-color:#2448a8}
+.bar{display:inline-block;width:48px;height:6px;background:#e6eaf3;border-radius:3px;margin-right:5px;vertical-align:middle;overflow:hidden}.bar i{display:block;height:100%}
+.libsel{background:#f7f9ff}
+@media screen and (max-width:900px){ .row3{grid-template-columns:minmax(0,1fr)} .row3>*,.row4>*{min-width:0} .tblock{grid-template-columns:1fr} .tbgrid{grid-template-columns:1fr 1fr} }
 
 /* print */
 @media print{
-  @page{size:A3 landscape;margin:8mm}
   body{background:#fff;overflow:visible;height:auto}
-  #bar,#palette,#drawer,#modal,#toast,.warns,.pedit,.slot{display:none!important}
+  #bar,#palette,#drawer,#modal,#toast,.warns,.pedit,.slot,.noprint,#fab{display:none!important}
+  table.cab input{border-color:transparent!important}
+  .tblock{break-inside:avoid}
+  .dv.s-planned{outline:none}
   #main{display:block;height:auto}
   #stage{overflow:visible;padding:0}
   #sheet{zoom:var(--pz,.9)!important;box-shadow:none;margin:0;padding:0}
@@ -311,7 +351,7 @@ h4.sec{margin:14px 0 6px;font-size:12px;letter-spacing:.4px;color:var(--navy);te
 <script src="i18n.js"></script>
 <script>
 "use strict";
-const VERSION = "1.1.0";
+const VERSION = "2.0.0";
 const isMobile = () => matchMedia("(max-width: 900px)").matches;
 let installEvt = null;
 const KEY = "rackulayout.v1";
@@ -325,14 +365,14 @@ const CABLES = [["fiber","#7d3cc8"],["fiberlc","#b07be0"],["data","#1f6fd6"],["p
 const CC = Object.fromEntries(CABLES);
 // h: default height (U), ports, inv: show in equipment list, cable: default rear cable, w/kg: rough default power/weight
 const TYPES = {
-  pp:{h:2,ports:48,inv:1,cable:"data",w:0,kg:2}, fiberpp:{h:1,ports:24,inv:1,cable:"fiberlc",w:0,kg:1.5},
-  cablemgr:{h:1,inv:0,w:0,kg:1}, brush:{h:1,inv:0,w:0,kg:.5},
-  coresw:{h:1,ports:48,inv:1,cable:"fiber",w:150,kg:5}, sw:{h:1,ports:48,inv:1,cable:"fiber",w:120,kg:4.5},
-  fw:{h:1,ports:10,inv:1,cable:"data",w:60,kg:4}, router:{h:1,ports:6,inv:1,cable:"data",w:40,kg:3},
-  nvr:{h:2,inv:1,cable:"poe",w:80,kg:8}, server:{h:2,inv:1,cable:"data",w:450,kg:20},
-  ups:{h:3,inv:1,cable:"power",w:0,kg:45}, pdu:{h:1,inv:1,cable:"power",w:0,kg:2},
-  fan:{h:1,inv:1,w:60,kg:3}, vent:{h:1,inv:0,w:0,kg:.5}, blank:{h:1,inv:0,w:0,kg:.5},
-  shelf:{h:1,inv:1,w:0,kg:3}, other:{h:1,inv:1,w:50,kg:3}
+  pp:{h:2,ports:48,inv:1,cable:"data",w:0,kg:2,dp:120,af:"none"}, fiberpp:{h:1,ports:24,inv:1,cable:"fiberlc",w:0,kg:1.5,dp:250,af:"none"},
+  cablemgr:{h:1,inv:0,w:0,kg:1,dp:100,af:"none"}, brush:{h:1,inv:0,w:0,kg:.5,dp:50,af:"none"},
+  coresw:{h:1,ports:48,inv:1,cable:"fiber",w:150,kg:5,dp:450,af:"f2b",psu:2}, sw:{h:1,ports:48,inv:1,cable:"fiber",w:120,kg:4.5,dp:400,af:"f2b"},
+  fw:{h:1,ports:10,inv:1,cable:"data",w:60,kg:4,dp:300,af:"f2b"}, router:{h:1,ports:6,inv:1,cable:"data",w:40,kg:3,dp:350,af:"f2b"},
+  nvr:{h:2,inv:1,cable:"poe",w:80,kg:8,dp:450,af:"f2b"}, server:{h:2,inv:1,cable:"data",w:450,kg:20,dp:750,af:"f2b",psu:2},
+  ups:{h:3,inv:1,cable:"power",w:0,kg:45,dp:650,af:"f2b"}, pdu:{h:1,inv:1,cable:"power",w:0,kg:2,dp:200,af:"none"},
+  fan:{h:1,inv:1,w:60,kg:3,dp:350,af:"none"}, vent:{h:1,inv:0,w:0,kg:.5,dp:50,af:"none"}, blank:{h:1,inv:0,w:0,kg:.5,dp:20,af:"none"},
+  shelf:{h:1,inv:1,w:0,kg:3,dp:500,af:"none"}, other:{h:1,inv:1,w:50,kg:3,dp:300,af:"f2b"}
 };
 const TYPE_ORDER = Object.keys(TYPES);
 const PORTED = new Set(["pp","fiberpp","coresw","sw","fw","router"]);
@@ -358,6 +398,7 @@ function undo(){ if (!hist.length) return; fut.push(JSON.stringify(store.racks))
 function redo(){ if (!fut.length) return; hist.push(JSON.stringify(store.racks)); store.racks = JSON.parse(fut.pop()); fix(); persist(); render(); }
 function fix(){
   if (!store.racks.length) store.racks.push(newRack());
+  store.racks.forEach(normRack);
   if (!store.racks.some(r => r.id === store.cur)) store.cur = store.racks[0].id;
   if (sel && !dev(sel)) sel = null;
 }
@@ -366,12 +407,12 @@ function newRack(name){
   return {id:uid("r"), name:name || t("newRack"), title:t("defTitle"), subtitle:t("defSub",{u:42}), u:42,
     dims:{h:2000,w:600,d:1000}, load:800,
     specs:{type:t("spd_type",{u:42}), door:t("spd_door"), cool:t("spd_cool"), ground:t("spd_ground"), entry:t("spd_entry")},
-    devices:[], links:[], notes:[]};
+    devices:[], links:[], notes:[], pdus:[], revs:[]};
 }
 function mkDev(type, u){
   const T = TYPES[type];
   return {id:uid("d"), type, u, h:T.h, name:t("ty_"+type), model:"", ports:T.ports||0,
-    rear:tq("rl_"+type), cable:T.cable||"", power:T.w, weight:T.kg, va:type==="ups"?3000:0, inv:!!T.inv, note:""};
+    rear:tq("rl_"+type), cable:T.cable||"", power:T.w, weight:T.kg, va:type==="ups"?3000:0, inv:!!T.inv, note:"", ...normDev({type})};
 }
 function sampleRack(){
   const r = newRack(t("sampleName"));
@@ -387,6 +428,23 @@ function sampleRack(){
   const L = (a,b,cable,label) => r.links.push({id:uid("l"), a:a.id, b:b.id, cable, label:label||""});
   L(core,agg,"fiber","10G"); L(fw,core,"data"); L(rt,fw,"data","WAN"); L(nvr,agg,"poe"); L(srv,core,"data"); L(ups,pdu,"power");
   r.notes = ["n1","n2","n3","n4","n5","n6"].map(k => t(k));
+  // v2 sample data: rack ID, A/B power, addressing, cable IDs and ports (template values)
+  normRack(r); r.code = "R01"; r.site = "WOLF"; r.room = t("sampleRoom"); r.row = "A"; r.coolKw = 3.5;
+  r.pdus = [{id:uid("p"), name:"PDU-A", feed:"A", amps:16}, {id:uid("p"), name:"PDU-B", feed:"B", amps:16}];
+  const [pa, pb] = r.pdus.map(p => p.id);
+  const S = (d, o) => Object.assign(d, o);
+  S(core, {model:"CISCO", host:"R01-CORE-01", ip:"10.10.10.2", psu:2, feedA:pa, feedB:pb, maxW:950, depth:508});
+  S(agg, {host:"R01-AGG-01", ip:"10.10.10.3", psu:2, feedA:pa, feedB:pb, maxW:600});
+  S(fw, {host:"R01-FW-01", ip:"10.10.10.1", psu:2, feedA:pa, feedB:pb, maxW:186});
+  S(rt, {host:"R01-RTR-01", ip:"10.10.10.254", psu:1, feedA:pa});
+  S(nvr, {host:"R01-NVR-01", ip:"10.10.40.250", psu:2, feedA:pa, feedB:pb});
+  S(srv, {host:"R01-SRV-01", ip:"10.10.10.20", psu:2, feedA:pa, feedB:pb, maxW:1100, depth:750});
+  S(ups, {wh:860, maxW:2700, depth:667}); S(pdu, {amps:16, feedA:"A"});
+  r.devices.filter(d => ["pp","fiberpp"].includes(d.type)).forEach(d => d.status = "installed");
+  const ports = [["Te1/1/1","Te1/1/1"],["port1","Gi1/0/1"],["Gi0/0/0","wan1"],["LAN1","Gi1/0/48"],["NIC1","Gi1/0/2"],["OUT1","IN"]];
+  r.devices.filter(d => d.type === "fan").forEach(d => d.feedA = pa);
+  r.links.forEach((l, i) => { l.cid = "R01-C" + String(i + 1).padStart(3, "0"); if (ports[i]){ l.pa = ports[i][0]; l.pb = ports[i][1]; } l.len = l.cable === "power" ? "" : "1"; });
+  r.tb = Object.assign(r.tb, {company:"WOLF", project:t("sampleTitle"), drawingNo:"RACK-R01", author:"Ulvi", status:t("tb_draft")});
   return r;
 }
 
@@ -507,6 +565,8 @@ function renderBar(){
   <div id="status"><span>${t("st_used",{a:"<b>"+T.used+"</b>",b:r.u})}</span><span>${t("st_free",{n:"<b>"+T.free+"</b>"})}</span><span>${t("st_power",{w:"<b>"+T.w+"</b>"})}</span><span>${t("st_weight",{kg:"<b>"+T.kg+"</b>"})}</span></div>
   <span class="sep"></span>
   ${installEvt?B("install","⤓","install","","tb dk pri"):""}
+  ${B("find","🔍","find")}${B("overview","▦","overview")}${B("versions","🕘","versions")}${B("doc","📄","docSet")}
+  <span class="sep"></span>
   ${B("sample","★","sample")}${B("import","⤓","import")}${B("export","⤒","export")}${B("print","⎙","print")}
   <button class="tb pri dk" data-a="pdf">${t("pdf")}</button>
   ${B("settings","⚙","settings")}
@@ -522,7 +582,7 @@ function warnings(r){
   r.devices.filter(d => d.type === "ups").forEach(d => { if (d.u > Math.ceil(r.u/3)) W.push(["", t("w_upsHigh",{u:d.u})]); });
   if (T.va > 0){ const p = Math.round(T.w / (T.va * 0.9) * 100); if (p >= 80) W.push([p > 100 ? "err" : "", t("w_power",{w:T.w,p})]); }
   const p = Math.round(T.used / r.u * 100); if (p >= 90) W.push(["", t("w_full",{p})]);
-  return W;
+  return [...W, ...warnings2(r)];
 }
 function renderSheet(){
   const r = R(), U = r.u;
@@ -538,7 +598,7 @@ function renderSheet(){
   }
   $("#sheet").innerHTML = `
   <div class="hdr"><textarea class="h1" data-f="title" rows="1" spellcheck="false">${esc(r.title)}</textarea><textarea class="h2" data-f="subtitle" rows="1" spellcheck="false">${esc(r.subtitle)}</textarea></div>
-  ${W.length?`<div class="warns">${W.map(w => `<div class="warn ${w[0]}">⚠ ${esc(w[1])}</div>`).join("")}</div>`:""}
+  ${W.length?`<details class="warns"${store.warnOpen===false?"":" open"}><summary>⚠ ${t("warnCount",{n:W.length})}</summary>${W.map(w => `<div class="warn ${w[0]}"${w[2]?` data-id="${w[2]}"`:""}>${w[0]==="err"?"⛔":w[0]==="info"?"ⓘ":"⚠"} ${esc(w[1])}</div>`).join("")}</details>`:""}
   <div class="row1">
     <section class="pan"><h3>${t("front")}</h3><div class="mhint">${t("tapHint")}</div>
       <div class="fwrap" style="--top:${TOP}px"><div class="ucol">${uc}</div>${rackHtml(r,false)}<div class="desc">${dc}</div></div>
@@ -557,14 +617,17 @@ function renderSheet(){
   <div class="row2">
     <section class="pan"><h3>${t("symbols")}</h3>${symbolsHtml(r)}</section>
     <section class="pan"><h3>${t("dims")}</h3>${dimsHtml(r)}</section>
-  </div>`;
+  </div>
+  ${r.view.power||r.view.cables?`<div class="row3">${r.view.power?`<section class="pan"><h3>${t("powerT")}</h3>${powerHtml(r)}</section>`:"<div></div>"}${r.view.cables?`<section class="pan"><h3>${t("cablesT")}</h3>${cableHtml(r)}</section>`:""}</div>`:""}
+  ${r.view.assets?`<div class="row4"><section class="pan"><h3>${t("assetsT")}</h3>${assetHtml(r)}</section></div>`:""}
+  ${titleBlock(r)}`;
 }
 function rackHtml(r, rear){
   const U = r.u; let h = "";
   if (!rear){ const o = occ(r); for (let u = 1; u <= U; u++) if (!o[u]) h += `<div class="slot" data-u="${u}" style="bottom:${(u-1)*UH}px" title="U${u}"></div>`; }
   r.devices.forEach(d => {
     const cc = CC[d.cable] || "#1f6fd6";
-    h += `<div class="dv t-${d.type}${sel===d.id?" sel":""}" data-id="${d.id}" style="bottom:${(d.u-1)*UH}px;height:${d.h*UH-1}px;--cc:${cc}" title="${esc(d.name)} · ${rangeTxt(d)}">${rear?rearFace(d):face(d)}</div>`;
+    h += `<div class="dv t-${d.type} s-${d.status||"active"}${sel===d.id?" sel":""}" data-id="${d.id}" style="bottom:${(d.u-1)*UH}px;height:${d.h*UH-1}px;--cc:${cc}" title="${esc(d.name)} · ${rangeTxt(d)}">${rear?rearFace(d):face(d)}</div>`;
   });
   if (rear) h += linksSvg(r);
   return `<div class="rk ${rear?"rear":"front"}"><div class="bay" style="height:${U*UH}px">${h}</div></div>`;
@@ -618,8 +681,8 @@ function autoNote(d, q){
 function invHtml(r){
   const rows = invRows(r);
   if (!rows.length) return `<div class="muted" style="text-align:center">${t("invEmpty")}</div>`;
-  return `<table class="t inv"><tr><th>#</th><th>${t("inv_dev")}</th><th>U</th><th>${t("inv_qty")}</th><th>${t("inv_note")}</th></tr>${rows.map((g,i) =>
-    `<tr data-id="${g.d.id}"${g.ids.includes(sel)?' class="hl"':""}><td class="c">${i+1}</td><td>${esc(g.d.name.toUpperCase())}</td><td class="c">${g.d.h}U</td><td class="c">${g.q}</td><td>${esc(autoNote(g.d,g.q))}</td></tr>`).join("")}</table>`;
+  return `<table class="t inv"><tr><th>#</th><th>ID</th><th>${t("inv_dev")}</th><th>U</th><th>${t("inv_qty")}</th><th>${t("inv_note")}</th></tr>${rows.map((g,i) =>
+    `<tr data-id="${g.d.id}"${g.ids.includes(sel)?' class="hl"':""}><td class="c">${i+1}</td><td class="c" style="white-space:nowrap;font-size:11px">${g.ids.length>1?esc(devId(r,dev2(r,g.ids[0])))+"…":esc(devId(r,g.d))}</td><td>${esc(g.d.name.toUpperCase())}</td><td class="c">${g.d.h}U</td><td class="c">${g.q}</td><td>${esc(autoNote(g.d,g.q))}</td></tr>`).join("")}</table>`;
 }
 function symbolsHtml(r){
   const used = new Set(r.devices.map(d => d.type));
@@ -667,13 +730,29 @@ function renderDrawer(){
   ${d.type==="ups"?`<label class="fld"><span>${t("d_va")}</span><input data-k="va" type="number" min="0" step="100" value="${d.va}"></label>`:""}
   <label class="chk"><input type="checkbox" data-k="inv"${d.inv?" checked":""}> ${t("d_inv")}</label>
   <label class="fld"><span>${t("d_note")}</span><input data-k="note" value="${esc(d.note)}" placeholder="${esc(autoNote(Object.assign({},d,{note:""}),1))}"></label>
+  <label class="fld"><span>${t("lib")}</span><select data-k="lib" class="libsel"><option value="">— ${t("libPick")} —</option>${Object.entries(LIB).filter(([,x]) => x.type===d.type || (d.type==="other")).map(([k,x]) => opt(k, `${k} · ${x.h}U · ${x.w||x.upsW||0} W · ${x.kg} kg`, "")).join("")}</select></label>
+  <h4 class="sec">${t("sec_asset")} · ${esc(devId(r,d))}</h4>
+  <div class="two"><label class="fld"><span>${t("a_status")}</span><select data-k="status">${STAT.map(x => opt(x, t("st_"+x), d.status)).join("")}</select></label><label class="fld"><span>${t("a_host")}</span><input data-k="host" value="${esc(d.host)}"></label></div>
+  <div class="two"><label class="fld"><span>IP</span><input data-k="ip" value="${esc(d.ip)}" placeholder="10.10.10.2"></label><label class="fld"><span>MAC</span><input data-k="mac" value="${esc(d.mac)}"></label></div>
+  <div class="two"><label class="fld"><span>${t("a_serial")}</span><input data-k="serial" value="${esc(d.serial)}"></label><label class="fld"><span>${t("a_asset")}</span><input data-k="asset" value="${esc(d.asset)}"></label></div>
+  <div class="two"><label class="fld"><span>${t("a_fw")}</span><input data-k="fw" value="${esc(d.fw)}"></label><label class="fld"><span>${t("a_owner")}</span><input data-k="owner" value="${esc(d.owner)}"></label></div>
+  <div class="two"><label class="fld"><span>${t("a_inst")}</span><input data-k="installed" type="date" value="${esc(d.installed)}"></label><label class="fld"><span>${t("a_warr")}</span><input data-k="warranty" type="date" value="${esc(d.warranty)}"></label></div>
+  <h4 class="sec">${t("sec_phys")}</h4>
+  <div class="two"><label class="fld"><span>${t("a_depth")}</span><input data-k="depth" type="number" min="0" value="${d.depth}"></label><label class="fld"><span>${t("a_air")}</span><select data-k="airflow">${AIRFLOW.map(x => opt(x, t("af_"+x), d.airflow)).join("")}</select></label></div>
+  <h4 class="sec">${t("sec_power")}</h4>
+  ${d.type==="pdu"?`<div class="two"><label class="fld"><span>${t("pw_cap")} (A)</span><input data-k="amps" type="number" min="0" value="${d.amps}"></label><label class="fld"><span>${t("pw_feed")}</span><select data-k="feedA">${opt("","—",d.feedA)}${opt("A","A",d.feedA)}${opt("B","B",d.feedA)}</select></label></div>`:
+   d.type==="ups"?`<div class="two"><label class="fld"><span>${t("a_upsW")}</span><input data-k="maxW" type="number" min="0" value="${d.maxW}"></label><label class="fld"><span>${t("a_wh")}</span><input data-k="wh" type="number" min="0" value="${d.wh}"></label></div>`:
+   `<div class="two"><label class="fld"><span>PSU</span><select data-k="psu">${[1,2,3,4].map(x => opt(x, x===1?t("psu1"):x+" "+t("psuN"), d.psu)).join("")}</select></label><label class="fld"><span>${t("a_maxW")}</span><input data-k="maxW" type="number" min="0" value="${d.maxW}"></label></div>
+   <div class="two"><label class="fld"><span>${t("feedA")}</span><select data-k="feedA">${opt("","—",d.feedA)}${feedsOf(r).map(f => opt(f.id, f.name+(f.feed?" ["+f.feed+"]":""), d.feedA)).join("")}</select></label><label class="fld"><span>${t("feedB")}</span><select data-k="feedB"${num(d.psu)<2?" disabled":""}>${opt("","—",d.feedB)}${feedsOf(r).map(f => opt(f.id, f.name+(f.feed?" ["+f.feed+"]":""), d.feedB)).join("")}</select></label></div>
+   ${feedsOf(r).length?"":`<div class="muted" style="font-size:11.5px;margin:-4px 0 8px">${t("pw_noPdu")}</div>`}`}
   <div class="mvbtns"><button class="btn" data-a="mvUp"${fits(r,d.u+1,d.h,d.id)?"":" disabled"}>${t("mvUp")}</button><button class="btn" data-a="mvDown"${fits(r,d.u-1,d.h,d.id)?"":" disabled"}>${t("mvDown")}</button></div>
   <div class="btns"><button class="btn" data-a="dupDev">⧉ ${t("d_dup")}</button><button class="btn dan" data-a="delDev">🗑 ${t("d_del")}</button></div>
   <h4 class="sec">${t("d_links")}</h4>
-  ${my.length?my.map(l => { const o = dev(l.a === d.id ? l.b : l.a); return `<div class="lnk"><i style="background:${CC[l.cable]||"#888"}"></i><span>→ <b>${esc(o?o.name:"?")}</b> <span class="muted">${o?rangeTxt(o):""}${l.label?" · "+esc(l.label):""}</span></span><button data-a="delLink" data-l="${l.id}" title="${t("d_del")}">×</button></div>`; }).join(""):`<div class="muted" style="font-size:12px">${t("noLinks")}</div>`}
+  ${my.length?my.map(l => { const o = dev(l.a === d.id ? l.b : l.a); return `<div class="lnk"><i style="background:${CC[l.cable]||"#888"}"></i><span>${l.cid?`<b>${esc(l.cid)}</b> `:""}→ <b>${esc(o?o.name:"?")}</b> <span class="muted">${o?rangeTxt(o):""}${(l.a===d.id?l.pa:l.pb)?" · "+t("cs_port")+" "+esc(l.a===d.id?l.pa:l.pb):""}${l.label?" · "+esc(l.label):""}</span></span><button data-a="delLink" data-l="${l.id}" title="${t("d_del")}">×</button></div>`; }).join(""):`<div class="muted" style="font-size:12px">${t("noLinks")}</div>`}
   ${others.length?`<div class="box"><label class="fld"><span>${t("d_to")}</span><select id="ln-to">${others.map(o => opt(o.id, `${rangeTxt(o)} · ${o.name}`, "")).join("")}</select></label>
   <div class="two"><label class="fld"><span>${t("d_cable")}</span><select id="ln-cab">${CABLES.map(([k]) => opt(k, t("cb_"+k), d.cable||"data")).join("")}</select></label>
   <label class="fld"><span>${t("d_linkLbl")}</span><input id="ln-lbl"></label></div>
+  <div class="two"><label class="fld"><span>${t("cs_portA")}</span><input id="ln-pa"></label><label class="fld"><span>${t("cs_portB")}</span><input id="ln-pb"></label></div>
   <button class="btn pri" data-a="addLink">＋ ${t("d_addLink")}</button></div>`:""}
   <div class="keys">${t("d_keys")}</div>`;
 }
@@ -698,10 +777,15 @@ function updateDev(k, raw){
       if (d.h !== T.h && fits(r, d.u, T.h, d.id)) d.h = T.h;
     });
   }
+  if (k === "lib"){ const L = LIB[raw]; if (!L) return;
+    if (L.h !== d.h && !fits(r, d.u, L.h, d.id)){ toast(t("badPos")); renderDrawer(); return; }
+    return commit(() => { d.model = raw; d.h = L.h; if (L.w !== undefined) d.power = L.w; d.maxW = L.max || L.upsW || 0; d.weight = L.kg; d.depth = L.dp; d.psu = L.psu; d.airflow = L.af;
+      if (L.ports) d.ports = L.ports; if (L.va) d.va = L.va; if (L.wh) d.wh = L.wh; if (L.amps) d.amps = L.amps; }); }
   commit(() => {
     if (k === "inv") d.inv = !!raw;
-    else if (["ports","power","weight","va"].includes(k)) d[k] = Math.max(0, num(raw, 0));
+    else if (["ports","power","weight","va","depth","psu","maxW","wh","amps"].includes(k)) d[k] = Math.max(0, num(raw, 0));
     else d[k] = String(raw);
+    if (k === "psu" && d.psu < 2) d.feedB = "";
   });
 }
 
@@ -729,6 +813,7 @@ const act = {
   dupRack(){ const src = R(); const r = JSON.parse(JSON.stringify(src)); const map = {};
     r.id = uid("r"); r.name = `${src.name} (${t("copy")})`; r.devices.forEach(d => { const n = uid("d"); map[d.id] = n; d.id = n; });
     r.links.forEach(l => { l.id = uid("l"); l.a = map[l.a]; l.b = map[l.b]; });
+    r.devices.forEach(d => { if (map[d.feedA]) d.feedA = map[d.feedA]; if (map[d.feedB]) d.feedB = map[d.feedB]; });
     commit(() => { store.racks.push(r); store.cur = r.id; sel = null; }); },
   delRack(){ const r = R(); if (store.racks.length < 2 || !confirm(t("confDelRack",{n:r.name}))) return; commit(() => { store.racks = store.racks.filter(x => x.id !== r.id); sel = null; }); },
   rackSettings(){ openRackSettings(); },
@@ -746,7 +831,9 @@ const act = {
     const n = Object.assign({}, d, {id:uid("d"), u}); commit(() => { r.devices.push(n); sel = n.id; }); },
   delDev(){ delDevice(sel); },
   addLink(){ const r = R(), b = $("#ln-to").value, cable = $("#ln-cab").value, label = $("#ln-lbl").value.trim();
-    if (!b) return; commit(() => r.links.push({id:uid("l"), a:sel, b, cable, label})); },
+    if (!b) return; const pa = $("#ln-pa").value.trim(), pb = $("#ln-pb").value.trim(); commit(() => r.links.push({id:uid("l"), a:sel, b, cable, label, pa, pb, cid:"", len:""})); },
+  find(){ openFind(); }, overview(){ openOverview(); }, versions(){ openVersions(); }, doc(){ openDoc(); },
+  autoCid(){ autoCid(); }, csvInv(){ csvInv(); }, csvCab(){ csvCab(); },
   delLink(el){ const r = R(), id = el.dataset.l; commit(() => { r.links = r.links.filter(l => l.id !== id); }); }
 };
 
@@ -754,12 +841,17 @@ const act = {
 function setZoom(z){ store.zoom = Math.min(1.6, Math.max(.4, Math.round(z*10)/10)); persist(); applyZoom(); renderBar(); }
 function fitZoom(){ const st = $("#stage"); store.zoom = Math.max(.4, Math.min(1.6, Math.floor((st.clientWidth - 40) / 1560 * 100) / 100)); persist(); applyZoom(); renderBar(); }
 function applyZoom(){ $("#sheet").style.zoom = isMobile() ? "" : store.zoom; }
+function pageMM(r){ const [a, b] = PAGES[r.pagefmt.size] || PAGES.A3; return r.pagefmt.orient === "portrait" ? [b, a] : [a, b]; }
 function prepPrint(){
+  const r = R(), [pw, ph] = pageMM(r), M = 8;
+  let st = $("#pagecss"); if (!st){ st = document.createElement("style"); st.id = "pagecss"; document.head.appendChild(st); }
+  st.textContent = `@media print{@page{size:${pw}mm ${ph}mm;margin:${M}mm}}`;   // explicit mm (browsers only know A3/A4 by name)
   const s = $("#sheet"), z = s.style.zoom; s.style.zoom = 1;
-  if (isMobile()){ document.documentElement.style.setProperty("--pz", ".9"); s.style.zoom = z; return; }
+  // on a phone the screen layout differs from the printed (desktop) one: fit the 1560 px sheet to the page width
+  if (isMobile()){ document.documentElement.style.setProperty("--pz", ((pw - 2*M) / 25.4 * 96 / 1560 * .98).toFixed(4)); s.style.zoom = z; return; }
   const w = s.offsetWidth, h = s.offsetHeight; s.style.zoom = z;
-  const pz = Math.min(1, 1530 / w, 1060 / h) * 0.98;
-  document.documentElement.style.setProperty("--pz", pz.toFixed(3));
+  const pz = Math.min((pw - 2*M) / 25.4 * 96 / w, (ph - 2*M) / 25.4 * 96 / h) * 0.985;
+  document.documentElement.style.setProperty("--pz", pz.toFixed(4));
 }
 window.addEventListener("beforeprint", () => { document.querySelectorAll(".fwrap,.rwrap").forEach(w => w.style.zoom = ""); $("#sheet").style.zoom = ""; prepPrint(); });
 window.addEventListener("afterprint", () => { applyZoom(); fitPanels(); });
@@ -789,13 +881,14 @@ function importText(txt){
     r.dims = Object.assign({h:2000,w:600,d:1000}, src.dims); r.specs = Object.assign(newRack().specs, src.specs);
     const map = {}; r.devices = (src.devices||[]).filter(d => TYPES[d.type]).map(d => { const n = Object.assign(mkDev(d.type, d.u), d); map[d.id] = n.id = uid("d"); return n; });
     r.links = (src.links||[]).filter(l => map[l.a] && map[l.b]).map(l => Object.assign({}, l, {id:uid("l"), a:map[l.a], b:map[l.b]}));
-    r.notes = Array.isArray(src.notes) ? src.notes.map(String) : []; return r; });
+    r.devices.forEach(d => { if (map[d.feedA]) d.feedA = map[d.feedA]; if (map[d.feedB]) d.feedB = map[d.feedB]; });
+    r.notes = Array.isArray(src.notes) ? src.notes.map(String) : []; return normRack(r); });
   commit(() => { store.racks.push(...clean); store.cur = clean[0].id; sel = null; });
   toast(t("impOk",{n:clean.length}));
 }
 async function savePdf(){
   prepPrint(); const r = R();
-  if (window.rackApp) { await window.rackApp.savePdf({name: fname(r.name) + ".pdf"}); return; }
+  if (window.rackApp) { sel = null; render(); prepPrint(); await window.rackApp.savePdf({name: fname(r.name) + ".pdf", pageSize:r.pagefmt.size, landscape:r.pagefmt.orient !== "portrait"}); return; }
   window.print();
 }
 
@@ -813,6 +906,7 @@ function openMenu(){
   ${installEvt?M("install","⤓","install"):""}
   ${M("newRack","＋","newRack")}${M("dupRack","⧉","dupRack")}${M("rackSettings","⚙","rackSettings")}${M("delRack","🗑","delRack",store.racks.length<2)}
   ${M("redo","↷","redo",!fut.length)}${M("sample","★","sample")}${M("import","⤓","import")}${M("export","⤒","export")}
+  ${M("find","🔍","find")}${M("overview","▦","overview")}${M("versions","🕘","versions")}${M("doc","📄","docSet")}
   ${M("pdf","📄","pdf")}${M("settings","🌐","settings")}</div>
   <div class="mfoot"><button class="btn" data-m="close">${t("close")}</button></div>`);
 }
@@ -822,7 +916,14 @@ function openRackSettings(){
   openModal(`<h3>${t("rackSettings")}</h3>${f("rs_name","name",r.name)}${f("rs_title","title",r.title)}${f("rs_sub","sub",r.subtitle)}
   <div class="two">${f("rs_u","u",r.u,"number")}${f("rs_load","load",r.load,"number")}</div>
   <div class="two">${f("rs_h","h",r.dims.h,"number")}${f("rs_w","w",r.dims.w,"number")}</div>
-  <div class="two">${f("rs_d","d",r.dims.d,"number")}<span></span></div>
+  <div class="two">${f("rs_d","d",r.dims.d,"number")}${f("rs_udepth","udepth",r.udepth,"number")}</div>
+  <div class="two">${f("rs_code","code",r.code)}${f("rs_site","site",r.site)}</div>
+  <div class="two">${f("rs_room","room",r.room)}${f("rs_row","row",r.row)}</div>
+  <div class="two">${f("rs_cool","cool",r.coolKw,"number")}${f("rs_volts","volts",r.volts,"number")}</div>
+  <div class="two">${f("rs_pf","pf",r.pf,"number")}<label class="fld"><span>${t("rs_air")}</span><select id="rs-air">${["f2b","b2f"].map(x => `<option value="${x}"${r.airflow===x?" selected":""}>${t("af_"+x)}</option>`).join("")}</select></label></div>
+  <h4 class="sec">${t("rs_pdus")}</h4><p class="muted" style="font-size:11.5px;margin:-2px 0 6px">${t("rs_pdusHint")}</p>
+  <table class="t" id="pdut"><tr><th>${t("rs_name")}</th><th>${t("pw_feed")}</th><th>A</th><th></th></tr>${r.pdus.map((p,i) => `<tr data-i="${i}" data-id="${p.id}"><td><input data-c="name" value="${esc(p.name)}"></td><td><select data-c="feed">${["","A","B"].map(x => `<option${(p.feed||"")===x?" selected":""}>${x}</option>`).join("")}</select></td><td><input data-c="amps" type="number" value="${esc(p.amps)}" style="width:60px"></td><td><button class="btn dan" data-m="pduDel" data-i="${i}">×</button></td></tr>`).join("")}</table>
+  <div class="btns"><button class="btn" data-m="pduAdd">＋ PDU (0U)</button></div>
   <div class="mfoot"><button class="btn" data-m="close">${t("cancel")}</button><button class="btn pri" data-m="rsSave">${t("save")}</button></div>`);
 }
 function saveRackSettings(){
@@ -836,6 +937,10 @@ function saveRackSettings(){
     r.name = v("name").trim() || r.name; r.title = v("title");
     r.u = u; r.load = Math.max(0, num(v("load"), r.load));
     r.dims = {h:Math.max(1, num(v("h"), r.dims.h)), w:Math.max(1, num(v("w"), r.dims.w)), d:Math.max(1, num(v("d"), r.dims.d))};
+    r.udepth = Math.max(0, num(v("udepth"), r.udepth)); r.code = v("code").trim(); r.site = v("site"); r.room = v("room"); r.row = v("row");
+    r.coolKw = Math.max(0, num(v("cool"), 0)); r.volts = Math.max(100, num(v("volts"), 230)); r.pf = Math.min(1, Math.max(.5, num(v("pf"), .9))); r.airflow = $("#rs-air").value;
+    const ids = new Set(); r.pdus = pduRows().map(p => { ids.add(p.id); return {id:p.id, name:p.name || "PDU", feed:p.feed, amps:num(p.amps, 16)}; });
+    r.devices.forEach(d => { if (d.type !== "pdu"){ if (d.feedA && !ids.has(d.feedA) && !dev2(r, d.feedA)) d.feedA = ""; if (d.feedB && !ids.has(d.feedB) && !dev2(r, d.feedB)) d.feedB = ""; } });
   });
   closeModal();
 }
@@ -860,15 +965,30 @@ $("#modal").addEventListener("click", e => {
   else if (m === "rsSave") saveRackSettings();
   else if (m === "ntSave"){ const v = $("#nt").value.split("\n").map(s => s.trim()).filter(Boolean); closeModal(); commit(() => { R().notes = v; }); }
   else if (m === "expAll"){ exportRacks(store.racks); }
+  else if (m === "verSave") saveVersion($("#ver-lbl").value.trim());
+  else if (m === "verRestore"){ const v = versions().find(x => x.id === +b.dataset.v); if (v && confirm(t("verConf"))){ closeModal(); commit(() => { store.racks = JSON.parse(JSON.stringify(v.racks)); store.cur = v.cur; sel = null; }); toast(t("verDone")); } }
+  else if (m === "verDel"){ try { localStorage.setItem(VKEY, JSON.stringify(versions().filter(x => x.id !== +b.dataset.v))); } catch(e){} openVersions(); }
+  else if (m === "go"){ closeModal(); store.cur = b.dataset.r || e.target.closest("[data-r]").dataset.r; sel = e.target.closest("[data-d]").dataset.d; persist(); render(); revealSel2(); }
+  else if (m === "goRack"){ closeModal(); store.cur = e.target.closest("[data-r]").dataset.r; sel = null; persist(); render(); }
+  else if (m === "csvOv") csvOv();
+  else if (m && m.startsWith("tab:")){ const k = m.slice(4); document.querySelectorAll(".mbox .tabb").forEach(x => x.classList.toggle("on", x.dataset.m === m)); document.querySelectorAll(".mbox .tsec").forEach(x => x.hidden = x.dataset.t !== k); }
+  else if (m === "docSave") saveDoc();
+  else if (m === "revAdd"){ const R0 = R(), revs = readRevs(), last = revs[revs.length - 1]; revs.push({rev:last ? String.fromCharCode((last.rev || "A").charCodeAt(0) + 1) : "A", date:today(), desc:"", by:R0.tb.author || ""}); R0.revs = revs; openDoc("rev"); }
+  else if (m === "revDel"){ const R0 = R(), revs = readRevs(); revs.splice(+b.dataset.i, 1); R0.revs = revs; openDoc("rev"); }
+  else if (m === "pduAdd" || m === "pduDel"){ const rows = pduRows(); if (m === "pduAdd") rows.push({id:uid("p"), name:"PDU-" + (rows.length % 2 ? "B" : "A"), feed:rows.length % 2 ? "B" : "A", amps:16}); else rows.splice(+b.dataset.i, 1);
+    const tb = $("#pdut"); tb.querySelectorAll("tr[data-i]").forEach(x => x.remove());
+    rows.forEach((p, i) => tb.insertAdjacentHTML("beforeend", `<tr data-i="${i}" data-id="${p.id}"><td><input data-c="name" value="${esc(p.name)}"></td><td><select data-c="feed">${["","A","B"].map(x => `<option${(p.feed||"")===x?" selected":""}>${x}</option>`).join("")}</select></td><td><input data-c="amps" type="number" value="${esc(p.amps)}" style="width:60px"></td><td><button class="btn dan" data-m="pduDel" data-i="${i}">×</button></td></tr>`)); }
 });
-$("#modal").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.tagName === "INPUT" && $("#rs-name")) saveRackSettings(); });
+$("#modal").addEventListener("click", e => { const tr = e.target.closest("tr.fhit"); if (tr && !e.target.closest("button")){ const ev = {target:tr}; if (tr.dataset.m === "go"){ closeModal(); store.cur = tr.dataset.r; sel = tr.dataset.d; persist(); render(); revealSel2(); } else if (tr.dataset.m === "goRack"){ closeModal(); store.cur = tr.dataset.r; sel = null; persist(); render(); } } });
+function revealSel2(){ requestAnimationFrame(() => { const el = document.querySelector(`.front .dv[data-id="${sel}"]`); if (el) el.scrollIntoView({block:"center", behavior:"smooth"}); }); }
+$("#modal").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.tagName === "INPUT" && $("#rs-name") && !e.target.closest("#pdut")) saveRackSettings(); });
 
 /* ---------- events ---------- */
 document.addEventListener("click", e => {
   const a = e.target.closest("[data-a]");
   if (a && !a.disabled && act[a.dataset.a] && !a.closest("#modal")){ act[a.dataset.a](a); return; }
   const slot = e.target.closest(".slot"); if (slot){ openAdd(+slot.dataset.u); return; }
-  const pick = e.target.closest(".rear .dv, .dc[data-id], .cl[data-id], .inv tr[data-id]");
+  const pick = e.target.closest(".rear .dv, .dc[data-id], .cl[data-id], .inv tr[data-id], .warn[data-id]");
   if (pick){ sel = pick.dataset.id; render(); revealSel(); }
 });
 document.addEventListener("change", e => {
@@ -876,9 +996,11 @@ document.addEventListener("change", e => {
   if (el.id === "rk-sel"){ store.cur = el.value; sel = null; persist(); render(); return; }
   if (el.dataset.f){ const r = R(), v = el.value.replace(/\s*\n\s*/g, " "); commit(() => { r[el.dataset.f] = v; }); return; }
   if (el.dataset.spec){ const r = R(), v = el.value; commit(() => { r.specs[el.dataset.spec] = v; }); return; }
+  if (el.dataset.lk){ const [id, k] = el.dataset.lk.split(":"), r = R(), l = r.links.find(x => x.id === id); if (l) commit(() => { l[k] = el.value.trim(); }); return; }
   if (el.closest("#drawer") && el.dataset.k) updateDev(el.dataset.k, el.type === "checkbox" ? el.checked : el.value);
 });
 document.addEventListener("input", e => { if (e.target.matches(".hdr textarea")) growHdr(); });
+document.addEventListener("toggle", e => { if (e.target.matches && e.target.matches("details.warns")){ store.warnOpen = e.target.open; persist(); } }, true);
 document.addEventListener("keydown", e => {
   if (e.key === "Enter" && e.target.matches(".hdr textarea")){ e.preventDefault(); e.target.blur(); return; }
   const typing = /INPUT|TEXTAREA|SELECT/.test(e.target.tagName);
@@ -886,6 +1008,8 @@ document.addEventListener("keydown", e => {
   if (e.key === "Escape"){ if (!$("#modal").hidden) closeModal(); else if (sel){ sel = null; render(); } return; }
   if (!$("#modal").hidden) return;
   if (mod && e.key.toLowerCase() === "p"){ e.preventDefault(); savePdf(); return; }
+  if (mod && e.key.toLowerCase() === "f"){ e.preventDefault(); openFind(); return; }
+  if (mod && e.key.toLowerCase() === "s"){ e.preventDefault(); openVersions(); return; }
   if (typing) return;
   if (mod && e.key.toLowerCase() === "z"){ e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
   if (mod && e.key.toLowerCase() === "y"){ e.preventDefault(); redo(); return; }
@@ -950,6 +1074,221 @@ document.addEventListener("pointerup", e => {
 });
 
 let toastT; function toast(m){ const el = $("#toast"); el.textContent = m; el.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("on"), 2600); }
+
+/* ===================== v2: asset data, power / cooling, cabling, documentation ===================== */
+const today = () => new Date().toISOString().slice(0, 10);
+const AIRFLOW = ["f2b","b2f","side","none"];
+const STAT = ["planned","installed","active","maintenance","faulty","removed"];
+const PAGES = {A4:[297,210], A3:[420,297], A2:[594,420], A1:[841,594], A0:[1189,841], Letter:[279,216], Legal:[356,216], Tabloid:[432,279]};
+// Typical data-sheet values (check the exact data sheet): h U, typical W, max W, kg, depth mm, ports, PSU count, airflow, UPS VA / battery Wh
+const LIB = {
+  "Cisco C9300-48P":{type:"sw", h:1, w:350, max:1100, kg:7.6, dp:445, ports:48, psu:2, af:"f2b"},
+  "Cisco C9200L-48P-4X":{type:"sw", h:1, w:120, max:740, kg:5.4, dp:381, ports:48, psu:1, af:"f2b"},
+  "Aruba CX 6300M 48G PoE":{type:"sw", h:1, w:260, max:1050, kg:7.1, dp:427, ports:48, psu:2, af:"f2b"},
+  "FortiSwitch 448E-FPOE":{type:"sw", h:1, w:180, max:950, kg:6.3, dp:400, ports:48, psu:2, af:"f2b"},
+  "UniFi USW-Pro-48-PoE":{type:"sw", h:1, w:120, max:660, kg:6.4, dp:400, ports:48, psu:1, af:"side"},
+  "Cisco C9500-48Y4C":{type:"coresw", h:1, w:350, max:950, kg:9.9, dp:508, ports:48, psu:2, af:"f2b"},
+  "Aruba CX 8325-48Y8C":{type:"coresw", h:1, w:330, max:750, kg:9.6, dp:508, ports:48, psu:2, af:"f2b"},
+  "FortiGate 100F":{type:"fw", h:1, w:40, max:105, kg:3.3, dp:254, ports:22, psu:2, af:"side"},
+  "FortiGate 200F":{type:"fw", h:1, w:110, max:186, kg:6, dp:420, ports:26, psu:2, af:"f2b"},
+  "FortiGate 400F":{type:"fw", h:1, w:160, max:270, kg:8, dp:430, ports:26, psu:2, af:"f2b"},
+  "Cisco ISR 4331":{type:"router", h:1, w:100, max:250, kg:6.4, dp:438, ports:6, psu:1, af:"side"},
+  "Dell PowerEdge R650":{type:"server", h:1, w:350, max:1100, kg:21, dp:749, psu:2, af:"f2b"},
+  "Dell PowerEdge R750":{type:"server", h:2, w:450, max:1400, kg:28, dp:751, psu:2, af:"f2b"},
+  "HPE ProLiant DL380 Gen11":{type:"server", h:2, w:450, max:1600, kg:26, dp:734, psu:2, af:"f2b"},
+  "Synology RS1221+":{type:"server", h:2, w:90, max:250, kg:9.5, dp:550, psu:1, af:"f2b"},
+  "Hikvision DS-9664NI-M16":{type:"nvr", h:2, w:180, max:300, kg:15, dp:520, psu:2, af:"f2b"},
+  "APC SMT3000RMI2U":{type:"ups", h:2, w:0, kg:38.6, dp:667, psu:1, af:"f2b", va:3000, upsW:2700, wh:860},
+  "APC SRT6KRMXLI":{type:"ups", h:4, w:0, kg:60, dp:735, psu:1, af:"f2b", va:6000, upsW:6000, wh:1300},
+  "Eaton 9PX 3000i RT2U":{type:"ups", h:2, w:0, kg:32.5, dp:650, psu:1, af:"f2b", va:3000, upsW:3000, wh:860},
+  "APC AP7921B (16A)":{type:"pdu", h:1, w:0, kg:2.3, dp:120, psu:1, af:"none", amps:16},
+  "APC AP8953 (0U, 16A)":{type:"pdu", h:1, w:0, kg:5, dp:60, psu:1, af:"none", amps:16}
+};
+function normRack(r){
+  r.code = r.code ?? ""; r.site = r.site ?? ""; r.room = r.room ?? ""; r.row = r.row ?? "";
+  r.udepth = r.udepth ?? Math.max(300, num(r.dims && r.dims.d, 1000) - 200);
+  r.coolKw = r.coolKw ?? 0; r.pf = r.pf ?? 0.9; r.airflow = r.airflow || "f2b"; r.volts = r.volts ?? 230;
+  r.pdus = r.pdus || []; r.revs = r.revs || [];
+  r.tb = Object.assign({on:true, company:"", project:"", client:"", drawingNo:"", rev:"A", author:"", checked:"", approved:"", date:today(), scale:"NTS", sheet:"1 / 1", status:""}, r.tb || {});
+  r.pagefmt = Object.assign({size:"A3", orient:"landscape"}, r.pagefmt || {});
+  r.view = Object.assign({power:true, cables:true, assets:true}, r.view || {});
+  r.devices.forEach(normDev);
+  r.links.forEach(l => { ["cid","pa","pb","len"].forEach(k => { if (l[k] === undefined) l[k] = ""; }); });
+  return r;
+}
+function normDev(d){
+  const T = TYPES[d.type] || {};
+  const def = {host:"", ip:"", mac:"", serial:"", asset:"", fw:"", owner:"", status:"active", installed:"", warranty:"", depth:T.dp || 0, airflow:T.af || "f2b", psu:T.psu || 1, feedA:"", feedB:"", maxW:0, wh:0, amps:d.type === "pdu" ? 16 : 0, side:"front"};
+  for (const k in def) if (d[k] === undefined) d[k] = def[k];
+  return d;
+}
+const devId = (r, d) => `${r.code || "R"}-U${String(topU(d)).padStart(2, "0")}`;
+/* ---------- power ---------- */
+function feedsOf(r){
+  return [...r.devices.filter(d => d.type === "pdu").map(d => ({id:d.id, name:`${d.name} (${rangeTxt(d)})`, amps:num(d.amps, 16), feed:d.feedA === "B" ? "B" : d.feedA === "A" ? "A" : ""})),
+    ...r.pdus.map(p => ({id:p.id, name:`${p.name} (0U)`, amps:num(p.amps, 16), feed:p.feed || "", zero:true}))];
+}
+function powerCalc(r){
+  const F = feedsOf(r), L = {}; F.forEach(f => L[f.id] = {f, n:0, fo:0, devs:0, cap:f.amps * num(r.volts, 230)});
+  let it = 0, mx = 0, dual = 0, single = 0, nof = 0;
+  r.devices.forEach(d => { if (d.type === "ups" || d.type === "pdu" || d.status === "removed") return; const w = num(d.power); if (!w && !num(d.maxW)) return;
+    it += w; mx += num(d.maxW) || w;
+    const a = L[d.feedA], b = L[d.feedB], two = num(d.psu) >= 2 && a && b && a !== b;
+    if (two){ a.n += w / 2; b.n += w / 2; a.fo += w; b.fo += w; a.devs++; b.devs++; dual++; }
+    else { const x = a || b; if (x){ x.n += w; x.fo += w; x.devs++; single++; } else nof++; } });
+  const ups = r.devices.filter(d => d.type === "ups" && d.status !== "removed");
+  const upsW = ups.reduce((s, d) => s + (num(d.maxW) || num(d.va) * num(r.pf, .9)), 0), wh = ups.reduce((s, d) => s + num(d.wh), 0);
+  return {F:Object.values(L), it, mx, dual, single, nof, btu:Math.round(it * 3.412), kw:it / 1000, kva:it / num(r.pf, .9) / 1000, amps:it / num(r.volts, 230),
+    upsW, upsPct:upsW ? Math.round(it / upsW * 100) : null, runtime:wh && it ? Math.round(wh * .9 / it * 60) : null};
+}
+function powerHtml(r){
+  const P = powerCalc(r), row = (k, v, cls = "") => `<tr><td class="k">${t(k)}</td><td class="${cls}">${v}</td></tr>`;
+  const cool = num(r.coolKw), heatPct = cool ? Math.round(P.kw / cool * 100) : null;
+  let h = `<table class="t">${row("pw_it", `<b>${Math.round(P.it)} W</b> · ${P.kw.toFixed(2)} kW · ${P.kva.toFixed(2)} kVA (PF ${r.pf}) · ${P.amps.toFixed(1)} A @ ${r.volts} V`)}
+    ${row("pw_max", `${Math.round(P.mx)} W`)}
+    ${row("pw_heat", `<b>${P.btu}</b> BTU/h${cool ? ` · ${t("pw_cool")} ${cool} kW → <b class="${heatPct > 100 ? "bad" : heatPct > 80 ? "wrn" : "ok"}">${heatPct}%</b>` : ""}`)}
+    ${row("pw_ups", P.upsW ? `${Math.round(P.upsW)} W · ${t("pw_load")} <b class="${P.upsPct > 100 ? "bad" : P.upsPct > 80 ? "wrn" : "ok"}">${P.upsPct}%</b>${P.runtime !== null ? ` · ${t("pw_run")} ≈ <b>${P.runtime}</b> ${t("min")}` : ""}` : "—")}
+    ${row("pw_psu", t("pw_psuV", {d:P.dual, s:P.single, n:P.nof}))}</table>`;
+  if (P.F.length) h += `<table class="t" style="margin-top:8px"><tr><th>PDU</th><th>${t("pw_feed")}</th><th>${t("pw_cap")}</th><th>${t("pw_norm")}</th><th>${t("pw_fail")}</th></tr>${P.F.map(x => {
+    const p1 = x.cap ? Math.round(x.n / x.cap * 100) : 0, p2 = x.cap ? Math.round(x.fo / x.cap * 100) : 0;
+    return `<tr><td>${esc(x.f.name)}</td><td class="c">${esc(x.f.feed || "—")}</td><td class="c">${x.f.amps} A · ${Math.round(x.cap)} W</td><td class="c ${p1 > 80 ? "bad" : ""}">${Math.round(x.n)} W (${p1}%)</td><td class="c ${p2 > 80 ? "bad" : p2 > 60 ? "wrn" : ""}">${Math.round(x.fo)} W (${p2}%)</td></tr>`; }).join("")}</table>`;
+  else h += `<div class="muted" style="font-size:11.5px;margin-top:6px">${t("pw_noPdu")}</div>`;
+  return h + `<div class="muted" style="font-size:11px;margin-top:6px">${t("pw_hint")}</div>`;
+}
+/* ---------- cable schedule ---------- */
+function cableHtml(r){
+  if (!r.links.length) return `<div class="muted" style="text-align:center">${t("noLinks")}</div>`;
+  const inp = (l, k, w) => `<input data-lk="${l.id}:${k}" value="${esc(l[k] ?? "")}" style="width:${w}">`;
+  return `<div class="tw"><table class="t cab"><tr><th>${t("cs_id")}</th><th>${t("cs_from")}</th><th>${t("cs_port")}</th><th>${t("cs_to")}</th><th>${t("cs_port")}</th><th>${t("cs_type")}</th><th>${t("cs_len")}</th><th>${t("cs_lbl")}</th></tr>${r.links.map(l => {
+    const a = dev2(r, l.a), b = dev2(r, l.b), c = CC[l.cable] || "#888";
+    return `<tr><td>${inp(l, "cid", "70px")}</td><td>${a ? esc(devId(r, a) + " " + a.name) : "?"}</td><td>${inp(l, "pa", "70px")}</td><td>${b ? esc(devId(r, b) + " " + b.name) : "?"}</td><td>${inp(l, "pb", "70px")}</td><td><i class="cdot" style="background:${c}"></i>${esc(t("cb_" + l.cable).split("–")[0].split("(")[0].trim())}</td><td>${inp(l, "len", "44px")}</td><td>${inp(l, "label", "70px")}</td></tr>`; }).join("")}</table></div>
+    <div class="btns" style="margin:8px 0 0"><button class="btn small noprint" data-a="autoCid"># ${t("cs_auto")}</button><button class="btn small noprint" data-a="csvCab">⤓ CSV</button></div>`;
+}
+/* ---------- asset register ---------- */
+function assetHtml(r){
+  const D = r.devices.filter(d => d.type !== "blank" && d.type !== "vent" && d.type !== "brush" && d.type !== "cablemgr").sort((a, b) => topU(b) - topU(a));
+  if (!D.length) return `<div class="muted">—</div>`;
+  return `<div class="tw"><table class="t inv"><tr><th>ID</th><th>${t("inv_dev")}</th><th>${t("d_model")}</th><th>${t("a_host")}</th><th>IP</th><th>${t("a_serial")}</th><th>${t("a_asset")}</th><th>${t("a_status")}</th><th>PSU</th><th>W</th><th>kg</th><th>${t("a_depth")}</th><th>${t("a_air")}</th></tr>${D.map(d =>
+    `<tr data-id="${d.id}"${sel === d.id ? ' class="hl"' : ""}><td class="c" style="white-space:nowrap">${esc(devId(r, d))}</td><td>${esc(d.name)}</td><td>${esc(d.model)}</td><td>${esc(d.host)}</td><td style="white-space:nowrap">${esc(d.ip)}</td><td>${esc(d.serial)}</td><td>${esc(d.asset)}</td><td class="c"><span class="st st-${d.status}">${esc(t("st_" + d.status))}</span></td><td class="c">${d.psu}${d.psu >= 2 ? (d.feedA && d.feedB ? " A+B" : " ⚠") : ""}</td><td class="c">${num(d.power) || ""}</td><td class="c">${num(d.weight) || ""}</td><td class="c">${num(d.depth) || ""}</td><td class="c">${esc(t("af_" + d.airflow))}</td></tr>`).join("")}</table></div>
+    <div class="btns" style="margin:8px 0 0"><button class="btn small noprint" data-a="csvInv">⤓ CSV</button></div>`;
+}
+/* ---------- title block ---------- */
+function titleBlock(r){
+  const b = r.tb; if (!b || !b.on) return "";
+  const c = (lab, val, cls = "") => `<div class="tbc ${cls}"><span>${esc(t(lab))}</span><b>${esc(val || "—")}</b></div>`, revs = r.revs.slice(-4);
+  return `<div class="tblock"><div class="tbc logo"><b>${esc(b.company || "")}</b></div>
+    <div class="tbrev"><table><tr><th>${t("tb_rev")}</th><th>${t("tb_date")}</th><th>${t("tb_desc")}</th><th>${t("tb_by")}</th></tr>${revs.length ? revs.map(x => `<tr><td>${esc(x.rev)}</td><td>${esc(x.date)}</td><td>${esc(x.desc)}</td><td>${esc(x.by)}</td></tr>`).join("") : `<tr><td colspan="4" class="muted">—</td></tr>`}</table></div>
+    <div class="tbgrid">${c("tb_project", b.project, "w2")}${c("tb_client", b.client)}${c("tb_site", [r.site, r.room, r.row].filter(Boolean).join(" / "))}
+      ${c("tb_title", r.title, "w2")}${c("tb_dno", b.drawingNo)}${c("tb_revc", b.rev)}
+      ${c("tb_author", b.author)}${c("tb_checked", b.checked)}${c("tb_approved", b.approved)}${c("tb_date", b.date)}
+      ${c("tb_scale", b.scale)}${c("tb_sheet", b.sheet)}${c("tb_status", b.status)}${c("tb_rack", `${r.code || "—"} · ${r.u}U`)}</div></div>`;
+}
+/* ---------- extended warnings ---------- */
+function warnings2(r){
+  const W = [], P = powerCalc(r), o = occ(r), ips = {}, hosts = {}, sers = {}, ports = {}, cids = {};
+  const ipOk = s => /^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}(\/\d{1,2})?$/.test(s);
+  r.devices.forEach(d => { const nm = `${devId(r, d)} ${d.name}`;
+    const ip = String(d.ip || "").trim(); if (ip){ if (!ipOk(ip)) W.push(["err", t("w_ip",{n:nm, ip}), d.id]); else if (ips[ip]) W.push(["err", t("w_ipDup",{ip, a:ips[ip], b:nm}), d.id]); ips[ip] = nm; }
+    const h = String(d.host || "").trim().toLowerCase(); if (h){ if (hosts[h]) W.push(["err", t("w_hostDup",{h:d.host}), d.id]); hosts[h] = 1; }
+    const s = String(d.serial || "").trim().toLowerCase(); if (s){ if (sers[s]) W.push(["err", t("w_serDup",{s:d.serial}), d.id]); sers[s] = 1; }
+    if (num(d.depth) && num(r.udepth) && num(d.depth) > num(r.udepth)) W.push(["err", t("w_depth",{n:nm, d:d.depth, u:r.udepth}), d.id]);
+    if (d.airflow === "b2f" && r.airflow === "f2b") W.push(["", t("w_air",{n:nm}), d.id]);
+    if (d.airflow === "side") W.push(["info", t("w_side",{n:nm}), d.id]);
+    if (num(d.psu) >= 2 && d.type !== "ups" && d.type !== "pdu" && feedsOf(r).length && !(d.feedA && d.feedB && d.feedA !== d.feedB)) W.push(["", t("w_psu",{n:nm}), d.id]);
+    if (d.type !== "ups" && d.type !== "pdu" && num(d.power) && feedsOf(r).length && !d.feedA && !d.feedB) W.push(["info", t("w_nofeed",{n:nm}), d.id]);
+    if (num(d.maxW) && num(d.power) > num(d.maxW)) W.push(["", t("w_maxW",{n:nm}), d.id]);
+  });
+  P.F.forEach(x => { if (!x.cap) return; if (x.fo > x.cap * .8) W.push(["err", t("w_feedFail",{p:x.f.name, w:Math.round(x.fo), c:Math.round(x.cap * .8)})]); else if (x.n > x.cap * .8) W.push(["", t("w_feedNorm",{p:x.f.name, w:Math.round(x.n)})]); });
+  const fa = feedsOf(r).filter(f => f.feed === "A").length, fb = feedsOf(r).filter(f => f.feed === "B").length;
+  if (P.dual && (!fa || !fb)) W.push(["", t("w_ab")]);
+  if (P.upsPct !== null && P.upsPct > 80) W.push([P.upsPct > 100 ? "err" : "", t("w_ups2",{p:P.upsPct})]);
+  if (P.runtime !== null && P.runtime < 10) W.push(["", t("w_runtime",{m:P.runtime})]);
+  if (num(r.coolKw) && P.kw > num(r.coolKw)) W.push(["err", t("w_cool",{k:P.kw.toFixed(2), c:r.coolKw})]);
+  // empty U between devices: blanking panels keep hot and cold air apart
+  let gaps = 0; const top = r.devices.reduce((m, d) => Math.max(m, topU(d)), 0), bot = r.devices.reduce((m, d) => Math.min(m, d.u), r.u);
+  for (let u = bot; u <= top; u++) if (!o[u]) gaps++;
+  if (gaps) W.push(["info", t("w_blank",{n:gaps})]);
+  // centre of gravity
+  const tk = r.devices.reduce((s, d) => s + num(d.weight), 0);
+  if (tk > 40){ const cg = r.devices.reduce((s, d) => s + num(d.weight) * (d.u + d.h / 2), 0) / tk; if (cg > r.u * .5) W.push(["", t("w_cg",{p:Math.round(cg / r.u * 100)})]); }
+  r.devices.filter(d => num(d.weight) >= 20 && d.u > r.u * .6).forEach(d => W.push(["", t("w_heavy",{n:d.name, kg:d.weight, u:rangeTxt(d)}), d.id]));
+  r.links.forEach(l => { const a = dev2(r, l.a), b = dev2(r, l.b);
+    [[a, l.pa], [b, l.pb]].forEach(([x, p]) => { p = String(p || "").trim(); if (!x || !p) return; const k = x.id + "|" + p.toLowerCase(); if (ports[k]) W.push(["err", t("w_portDup",{n:x.name, p}), x.id]); ports[k] = 1;
+      if ((x.type === "pp" || x.type === "fiberpp") && /^\d+$/.test(p) && num(p) > num(x.ports)) W.push(["", t("w_portMax",{n:x.name, p, m:x.ports}), x.id]); });
+    const c = String(l.cid || "").trim(); if (c){ if (cids[c]) W.push(["err", t("w_cidDup",{c})]); cids[c] = 1; }
+    if ((l.cable === "data" || l.cable === "poe") && num(l.len) > 90) W.push(["err", t("w_len",{c:l.cid || "?", l:l.len})]); });
+  return W;
+}
+/* ---------- versions (stored next to the data) ---------- */
+const VKEY = "rackulayout.versions";
+function versions(){ try { return JSON.parse(localStorage.getItem(VKEY)) || []; } catch(e){ return []; } }
+function saveVersion(label){ const v = versions(); v.unshift({id:Date.now(), date:new Date().toISOString(), label:label || "", racks:JSON.parse(JSON.stringify(store.racks)), cur:store.cur});
+  while (v.length > 30) v.pop(); try { localStorage.setItem(VKEY, JSON.stringify(v)); toast(t("verSaved")); } catch(e){ v.splice(10); try { localStorage.setItem(VKEY, JSON.stringify(v)); } catch(_){} toast("⚠ " + t("verFull")); } openVersions(); }
+function openVersions(){
+  const v = versions();
+  openModal(`<h3>🕘 ${t("versions")}</h3><p class="muted" style="font-size:12px;margin-top:-6px">${t("verHint")}</p>
+  <div class="btns"><input id="ver-lbl" placeholder="${esc(t("verLabel"))}" style="flex:1;border:1px solid #cdd5e6;border-radius:6px;padding:6px 8px"><button class="btn pri" data-m="verSave">💾 ${t("verSave")}</button></div>
+  <div style="max-height:50vh;overflow:auto"><table class="t">${v.length ? v.map(x => `<tr><td style="white-space:nowrap">${esc(new Date(x.date).toLocaleString())}</td><td>${esc(x.label || "—")}<br><span class="muted">${x.racks.length} rack</span></td><td style="white-space:nowrap;text-align:right"><button class="btn" data-m="verRestore" data-v="${x.id}">↺ ${t("verRestore")}</button> <button class="btn dan" data-m="verDel" data-v="${x.id}">×</button></td></tr>`).join("") : `<tr><td class="muted">—</td></tr>`}</table></div>
+  <div class="mfoot"><button class="btn" data-m="close">${t("close")}</button></div>`);
+}
+/* ---------- search & overview ---------- */
+function openFind(){
+  openModal(`<h3>🔍 ${t("find")}</h3><label class="fld"><span>${t("findHint")}</span><input id="fq" autocomplete="off"></label><div id="fres" style="max-height:52vh;overflow:auto"></div><div class="mfoot"><button class="btn" data-m="close">${t("close")}</button></div>`);
+  const run = () => { const q = $("#fq").value.trim().toLowerCase(); const R0 = [];
+    if (q) store.racks.forEach(r => r.devices.forEach(d => { const hay = [d.name, d.model, d.host, d.ip, d.mac, d.serial, d.asset, d.note, devId(r, d)].join(" ").toLowerCase(); if (hay.includes(q)) R0.push({r, d}); }));
+    $("#fres").innerHTML = R0.length ? `<table class="t">${R0.slice(0, 80).map(x => `<tr class="fhit" data-m="go" data-r="${x.r.id}" data-d="${x.d.id}" style="cursor:pointer"><td>${esc(x.r.name)}</td><td>${esc(devId(x.r, x.d))}</td><td>${esc(x.d.name)}</td><td>${esc(x.d.ip || x.d.host || x.d.serial || "")}</td></tr>`).join("")}</table>` : (q ? `<div class="muted">${t("findNone")}</div>` : ""); };
+  $("#fq").addEventListener("input", run);
+}
+function openOverview(){
+  const rows = store.racks.map(r => { const T = totals(r), P = powerCalc(r); return {r, T, P, pct:Math.round(T.used / r.u * 100)}; });
+  const sum = rows.reduce((s, x) => ({u:s.u + x.r.u, used:s.used + x.T.used, kw:s.kw + x.P.kw, kg:s.kg + x.T.kg, n:s.n + x.r.devices.length}), {u:0, used:0, kw:0, kg:0, n:0});
+  openModal(`<h3>▦ ${t("overview")}</h3><div style="max-height:60vh;overflow:auto"><table class="t"><tr><th>${t("rs_code")}</th><th>${t("rs_name")}</th><th>${t("tb_site")}</th><th>U</th><th>%</th><th>kW</th><th>BTU/h</th><th>kg</th><th>${t("inv_qty")}</th></tr>
+  ${rows.map(x => `<tr class="fhit" data-m="goRack" data-r="${x.r.id}" style="cursor:pointer"><td>${esc(x.r.code || "—")}</td><td>${esc(x.r.name)}</td><td>${esc([x.r.site, x.r.room, x.r.row].filter(Boolean).join(" / "))}</td><td class="c">${x.T.used}/${x.r.u}</td><td class="c"><div class="bar"><i style="width:${Math.min(100, x.pct)}%;background:${x.pct > 90 ? "#d63a3a" : x.pct > 75 ? "#f0a030" : "#1f9d55"}"></i></div>${x.pct}%</td><td class="c">${x.P.kw.toFixed(2)}</td><td class="c">${x.P.btu}</td><td class="c">${x.T.kg}</td><td class="c">${x.r.devices.length}</td></tr>`).join("")}
+  <tr style="font-weight:700"><td colspan="3">${t("total")}</td><td class="c">${sum.used}/${sum.u}</td><td class="c">${sum.u ? Math.round(sum.used / sum.u * 100) : 0}%</td><td class="c">${sum.kw.toFixed(2)}</td><td class="c">${Math.round(sum.kw * 3412)}</td><td class="c">${Math.round(sum.kg)}</td><td class="c">${sum.n}</td></tr></table></div>
+  <div class="mfoot"><button class="btn" data-m="csvOv">⤓ CSV</button><button class="btn pri" data-m="close">${t("close")}</button></div>`);
+}
+/* ---------- CSV ---------- */
+function csvSave(name, header, rows){
+  const q = v => { const s = String(v ?? ""); return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+  const data = "﻿" + [header, ...rows].map(r => r.map(q).join(";")).join("\r\n");
+  const fn = fname(R().name) + " - " + name + ".csv";
+  if (window.rackApp){ window.rackApp.saveFile({name:fn, data, filters:[{name:"CSV", extensions:["csv"]}]}).then(p => { if (p) toast(t("saved")); }); return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([data], {type:"text/csv"})); a.download = fn; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+}
+function csvInv(){ const r = R(); csvSave(t("inv"), ["ID","U",t("inv_dev"),t("d_type"),t("d_model"),t("a_host"),"IP","MAC",t("a_serial"),t("a_asset"),t("a_fw"),t("a_owner"),t("a_status"),t("a_inst"),t("a_warr"),"PSU","Feed A","Feed B","W","W max","kg",t("a_depth"),t("a_air"),t("d_note")],
+  r.devices.slice().sort((a, b) => topU(b) - topU(a)).map(d => { const F = Object.fromEntries(feedsOf(r).map(f => [f.id, f.name])); return [devId(r, d), rangeTxt(d), d.name, t("ty_" + d.type), d.model, d.host, d.ip, d.mac, d.serial, d.asset, d.fw, d.owner, t("st_" + d.status), d.installed, d.warranty, d.psu, F[d.feedA] || "", F[d.feedB] || "", d.power, d.maxW, d.weight, d.depth, t("af_" + d.airflow), d.note]; })); }
+function csvCab(){ const r = R(); csvSave(t("cables"), [t("cs_id"), t("cs_from"), t("cs_port"), t("cs_to"), t("cs_port"), t("cs_type"), t("cs_len"), t("cs_lbl")],
+  r.links.map(l => { const a = dev2(r, l.a), b = dev2(r, l.b); return [l.cid, a ? devId(r, a) + " " + a.name : "", l.pa, b ? devId(r, b) + " " + b.name : "", l.pb, t("cb_" + l.cable), l.len, l.label]; })); }
+function csvOv(){ csvSave(t("overview"), [t("rs_code"), t("rs_name"), t("tb_site"), "U", t("st_usedS"), "kW", "BTU/h", "kg"], store.racks.map(r => { const T = totals(r), P = powerCalc(r); return [r.code, r.name, [r.site, r.room, r.row].filter(Boolean).join(" / "), r.u, T.used, P.kw.toFixed(2), P.btu, T.kg]; })); }
+function autoCid(){ const r = R(); let n = 1; const used = new Set(r.links.map(l => l.cid).filter(Boolean)); const pre = (r.code || "R") + "-C";
+  commit(() => { r.links.forEach(l => { if (String(l.cid).trim()) return; let id; do { id = pre + String(n++).padStart(3, "0"); } while (used.has(id)); l.cid = id; used.add(id); }); }); }
+/* ---------- document settings (title block, revisions, page) ---------- */
+function openDoc(tab){
+  const r = R(), b = r.tb, f = (k, key, v, type = "text") => `<label class="fld"><span>${t(k)}</span><input id="tb-${key}" type="${type}" value="${esc(v)}"></label>`;
+  const tabs = [["tb", t("ds_tb")], ["rev", t("ds_rev")], ["page", t("ds_page")]], cur = tab || "tb";
+  openModal(`<h3>📄 ${t("docSet")}</h3><div class="tabs">${tabs.map(([k, l]) => `<button class="tabb${k === cur ? " on" : ""}" data-m="tab:${k}">${l}</button>`).join("")}</div>
+  <div class="tsec" data-t="tb"${cur === "tb" ? "" : " hidden"}><label class="chk"><input type="checkbox" id="tb-on"${b.on ? " checked" : ""}> ${t("tb_show")}</label>
+    <div class="two">${f("tb_company","company",b.company)}${f("tb_client","client",b.client)}</div>${f("tb_project","project",b.project)}
+    <div class="two">${f("tb_dno","drawingNo",b.drawingNo)}${f("tb_revc","rev",b.rev)}</div>
+    <div class="two">${f("tb_author","author",b.author)}${f("tb_checked","checked",b.checked)}</div>
+    <div class="two">${f("tb_approved","approved",b.approved)}${f("tb_date","date",b.date,"date")}</div>
+    <div class="two">${f("tb_scale","scale",b.scale)}${f("tb_sheet","sheet",b.sheet)}</div>${f("tb_status","status",b.status)}</div>
+  <div class="tsec" data-t="rev"${cur === "rev" ? "" : " hidden"}><table class="t" id="revt"><tr><th>${t("tb_rev")}</th><th>${t("tb_date")}</th><th>${t("tb_desc")}</th><th>${t("tb_by")}</th><th></th></tr>
+    ${r.revs.map((x, i) => `<tr>${["rev","date","desc","by"].map(k => `<td><input class="rv" data-c="${k}" value="${esc(x[k])}"></td>`).join("")}<td><button class="btn dan" data-m="revDel" data-i="${i}">×</button></td></tr>`).join("")}</table>
+    <div class="btns"><button class="btn" data-m="revAdd">＋ ${t("tb_addRev")}</button></div></div>
+  <div class="tsec" data-t="page"${cur === "page" ? "" : " hidden"}><div class="two"><label class="fld"><span>${t("pg_size")}</span><select id="pg-size">${Object.keys(PAGES).map(k => `<option${k === r.pagefmt.size ? " selected" : ""}>${k}</option>`).join("")}</select></label>
+    <label class="fld"><span>${t("pg_orient")}</span><select id="pg-or"><option value="landscape"${r.pagefmt.orient === "landscape" ? " selected" : ""}>${t("pg_land")}</option><option value="portrait"${r.pagefmt.orient === "portrait" ? " selected" : ""}>${t("pg_port")}</option></select></label></div>
+    <label class="chk"><input type="checkbox" id="vw-power"${r.view.power ? " checked" : ""}> ${t("vw_power")}</label><label class="chk"><input type="checkbox" id="vw-cables"${r.view.cables ? " checked" : ""}> ${t("vw_cables")}</label><label class="chk"><input type="checkbox" id="vw-assets"${r.view.assets ? " checked" : ""}> ${t("vw_assets")}</label></div>
+  <div class="mfoot"><button class="btn" data-m="close">${t("cancel")}</button><button class="btn pri" data-m="docSave">${t("save")}</button></div>`);
+}
+function readRevs(){ return [...document.querySelectorAll("#revt tr")].slice(1).map(tr => { const o = {}; tr.querySelectorAll("input.rv").forEach(i => o[i.dataset.c] = i.value); return o; }); }
+function saveDoc(){
+  const r = R(), v = id => $("#" + id);
+  commit(() => { r.tb.on = v("tb-on").checked; ["company","client","project","drawingNo","rev","author","checked","approved","date","scale","sheet","status"].forEach(k => r.tb[k] = v("tb-" + k).value);
+    r.revs = readRevs(); r.pagefmt = {size:v("pg-size").value, orient:v("pg-or").value}; r.view = {power:v("vw-power").checked, cables:v("vw-cables").checked, assets:v("vw-assets").checked}; });
+  closeModal();
+}
+function pduRows(){ return [...document.querySelectorAll("#pdut tr[data-i]")].map(tr => { const o = {}; tr.querySelectorAll("[data-c]").forEach(i => o[i.dataset.c] = i.value); o.id = tr.dataset.id || uid("p"); return o; }); }
 
 /* ---------- start ---------- */
 if (store.fresh){ delete store.fresh; const r = sampleRack(); store.racks.push(r); store.cur = r.id; }

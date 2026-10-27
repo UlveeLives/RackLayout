@@ -1,6 +1,6 @@
 // Rack U-Layout service worker: keeps the app working offline.
 // Bump VERSION on every release so phones pick up the new files.
-const VERSION = "rack-u-layout-1.1.0";
+const VERSION = "rack-u-layout-2.0.0";
 const FILES = ["./", "index.html", "i18n.js", "manifest.webmanifest",
   "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "icons/apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
