@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14204f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RackLayout">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: blob:">
+<title>Rack U-Layout</title>
+<style>
+:root{
+  --navy:#1b2c72; --blue:#2448a8; --ink:#1d2433; --mut:#5d6880; --line:#c7d1e6; --pan:#2b4aa0;
+  --bg:#e7ebf3; --card:#fff; --bar:#14204f; --acc:#ffb703; --ok:#1f9d55; --bad:#d63a3a; --uh:20px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font:13px/1.35 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:var(--bg);overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+
+/* ---------- top bar ---------- */
+#bar{height:52px;background:var(--bar);color:#fff;display:flex;align-items:center;gap:6px;padding:0 12px;user-select:none}
+#bar .logo{display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:.3px;margin-right:10px;white-space:nowrap}
+#bar .logo i{width:22px;height:26px;border-radius:3px;background:linear-gradient(#2c3b7a 0 0) 4px 4px/14px 3px no-repeat,linear-gradient(#ffb703 0 0) 4px 9px/14px 3px no-repeat,linear-gradient(#2c3b7a 0 0) 4px 14px/14px 3px no-repeat,linear-gradient(#5ac8fa 0 0) 4px 19px/14px 3px no-repeat,#0b1233;border:1px solid #4a5aa0}
+#bar select{background:#22306a;border:1px solid #3a4b94;color:#fff;border-radius:6px;padding:5px 8px;max-width:220px}
+@media (max-width:1500px){.tb .tx{display:none}}
+.tb{background:transparent;border:1px solid transparent;color:#dfe5ff;border-radius:6px;padding:5px 9px;white-space:nowrap}
+.tb:hover{background:#22306a;border-color:#3a4b94}
+.tb:disabled{opacity:.35;cursor:default;background:transparent;border-color:transparent}
+.tb.pri{background:var(--acc);color:#1b1b1b;font-weight:600}
+.tb.pri:hover{background:#ffc53d}
+.sep{width:1px;height:26px;background:#33427f;margin:0 4px}
+.grow{flex:1}
+#status{font-size:12px;overflow:hidden;min-width:0;color:#b9c3ee;white-space:nowrap;display:flex;gap:12px}
+#status b{color:#fff;font-weight:600}
+.zoom{display:flex;align-items:center;gap:2px}
+.zoom span{min-width:42px;text-align:center;font-size:12px;color:#cfd7ff}
+
+/* ---------- layout ---------- */
+#main{display:flex;height:calc(100% - 52px)}
+#palette{width:118px;flex:none;background:#fff;border-right:1px solid var(--line);overflow:auto;padding:8px 6px;user-select:none}
+#palette h4{margin:2px 4px 2px;font-size:12px;color:var(--navy);letter-spacing:.4px;text-transform:uppercase}
+#palette p{margin:0 4px 8px;font-size:11px;color:var(--mut)}
+.pal-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:7px;border:1px solid transparent;cursor:grab;font-size:11px;text-align:center;color:#334}
+.pal-item:hover{background:#eef2fb;border-color:#d4ddf2}
+.pal-item svg{width:46px;height:28px}
+.pal-item small{color:var(--mut);font-size:10px}
+#stage{flex:1;overflow:auto;padding:18px}
+#drawer{width:330px;flex:none;background:#fff;border-left:1px solid var(--line);overflow:auto;padding:14px 16px}
+#drawer[hidden]{display:none}
+
+/* ---------- sheet ---------- */
+#sheet{width:1560px;margin:0 auto;background:var(--card);padding:16px 18px 18px;box-shadow:0 2px 14px rgba(20,32,79,.12);border-radius:4px}
+.hdr{text-align:center;margin-bottom:10px}
+.hdr textarea{display:block;width:100%;border:1px dashed transparent;background:transparent;text-align:center;color:var(--navy);border-radius:4px;resize:none;overflow:hidden;line-height:1.2;padding:2px 4px;font-family:inherit}
+.hdr textarea:hover,.hdr textarea:focus{border-color:#b9c6e6;outline:none}
+.hdr .h1{font-size:30px;font-weight:800;letter-spacing:.5px}
+.hdr .h2{font-size:17px;font-weight:600;color:#253a8a}
+.warns{margin:0 0 10px;display:flex;flex-direction:column;gap:4px}
+.warn{background:#fff5e0;border:1px solid #f3c66b;color:#6b4a00;border-radius:6px;padding:5px 10px;font-size:12px}
+.warn.err{background:#fde8e8;border-color:#ef9a9a;color:#8a1f1f}
+.row1{display:grid;grid-template-columns:600px 530px 1fr;gap:12px;align-items:start}
+.row2{display:grid;grid-template-columns:1fr 520px;gap:12px;margin-top:12px}
+.pan{border:1.6px solid var(--pan);border-radius:9px;padding:10px 12px 12px;position:relative;background:#fff}
+.pan h3{margin:0 0 10px;font-size:14.5px;color:var(--blue);font-weight:700;letter-spacing:.2px;text-align:center}
+.pan h3 small{font-size:12px;font-weight:600}
+.pedit{position:absolute;right:8px;top:7px;border:1px solid #c9d4ee;background:#f4f7fd;border-radius:6px;padding:1px 8px;font-size:12px;color:var(--blue)}
+.pedit:hover{background:#e5ecfb}
+.rcol{display:flex;flex-direction:column;gap:12px}
+
+/* front view block */
+.fwrap{display:flex;gap:10px;justify-content:center}
+.ucol,.desc{padding-top:var(--top);flex:none}
+.ucol{width:30px}
+.ucol .hd,.desc .hd{height:0;position:relative}
+.ucol .hd b,.desc .hd b{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:12px;color:var(--navy);border:1px solid var(--line);background:#f1f4fb;padding:2px 0}
+.uc{height:var(--uh);border:1px solid #c5d0ea;border-top:none;text-align:center;font-size:11px;font-weight:600;color:var(--blue);line-height:calc(var(--uh) - 1px)}
+.hd + .uc{border-top:1px solid #c5d0ea}
+.desc{width:220px}
+.dc{border:1px solid var(--line);border-top:none;font-size:11.5px;padding:0 8px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer}
+.desc .dc:nth-child(2){border-top:1px solid var(--line)}
+.dc.e{color:#8a93a8;cursor:default}
+.dc.on{background:#fff4cf}
+.dc span{overflow:hidden;text-overflow:ellipsis}
+
+/* rack drawing */
+.rk{position:relative;width:300px;flex:none;background:linear-gradient(90deg,#0d0e10,#26282d 6%,#1a1c20 50%,#26282d 94%,#0d0e10);border-radius:7px;padding:var(--top) 0 22px;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.rk::before{content:"";position:absolute;left:10px;right:10px;top:6px;height:9px;border-radius:2px;background:repeating-linear-gradient(90deg,#3a3d44 0 6px,#16171a 6px 9px)}
+.rk::after{content:"";position:absolute;left:18px;right:18px;bottom:-6px;height:8px;background:linear-gradient(90deg,#111 0 20px,transparent 20px calc(100% - 20px),#111 0);border-radius:0 0 3px 3px}
+.bay{position:relative;margin:0 14px;background:#08090a}
+.bay::before,.bay::after{content:"";position:absolute;top:0;bottom:0;width:9px;background:radial-gradient(circle at 50% 50%,#000 1.5px,transparent 2px) 0 0/9px calc(var(--uh)/3),#3d4047;z-index:0}
+.bay::before{left:-1px}.bay::after{right:-1px}
+.slot{position:absolute;left:10px;right:10px;height:var(--uh);cursor:pointer;z-index:1}
+.slot:hover{background:rgba(255,183,3,.22);outline:1px dashed #ffb703}
+.slot:hover::after{content:"+";position:absolute;inset:0;text-align:center;color:#ffb703;font-weight:700;line-height:var(--uh)}
+.dv{position:absolute;left:0;right:0;z-index:2;border-radius:2px;background:#1d1f23;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.7),0 1px 0 #000;display:flex;align-items:center;gap:6px;padding:0 13px;overflow:hidden;cursor:grab;color:#e6e8ee}
+.rear .dv{cursor:pointer}
+.dv::before,.dv::after{content:"";position:absolute;top:1px;bottom:1px;width:9px;background:radial-gradient(circle,#9aa0a8 1.4px,#50545b 1.9px,transparent 2.3px) center/9px calc(var(--uh)) repeat-y,linear-gradient(90deg,#2c2f35,#3b3f46)}
+.dv::before{left:0}.dv::after{right:0}
+.dv.sel{outline:2px solid var(--acc);outline-offset:-1px;z-index:3}
+.dv.dragging{opacity:.35}
+.brand{font-size:8.5px;font-weight:700;letter-spacing:.6px;color:#f2f2f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.brand.red{color:#ff4b3e}
+.led{width:4px;height:4px;border-radius:50%;background:#33e07a;box-shadow:0 0 3px #33e07a;flex:none}
+.led.o{background:#ffb02e;box-shadow:0 0 3px #ffb02e}
+.flex1{flex:1}
+.ports{display:flex;flex-direction:column;gap:1px}
+.prow{display:flex;gap:1px}
+.prow i{display:block;width:6px;height:6px;background:#15171a;box-shadow:inset 0 2px 0 #000;border-radius:1px}
+.prow i.g{margin-left:4px}
+.t-pp{background:linear-gradient(#d7dadf,#b9bdc4)}
+.t-pp .prow i{width:7px;background:#25282d;box-shadow:inset 0 2px 0 #000,0 0 0 .5px #8a8f97}
+.t-pp .lab{width:7px;height:100%;background:repeating-linear-gradient(#fff 0 3px,#e1e4e9 3px 4px)}
+.t-fiberpp{background:#2a2d33}
+.t-fiberpp .prow i{width:5px;height:8px;background:#1d8ff0;box-shadow:inset 0 2px 0 #0b4f8f;border-radius:1px}
+.t-coresw,.t-sw{background:linear-gradient(#2b2e34,#1c1e22)}
+.t-coresw .prow i,.t-sw .prow i{background:#2a2410;box-shadow:inset 0 0 0 1px #d9b13c}
+.sfp{display:flex;gap:2px}.sfp i{display:block;width:8px;height:6px;background:#0c0d0f;box-shadow:inset 0 0 0 1px #8b96a8}
+.t-coresw{border-top:2px solid #2f6fd6}
+.t-fw{background:linear-gradient(#26292e,#17181b)}
+.t-fw .prow i{background:#111;box-shadow:inset 0 0 0 1px #6c737e}
+.t-router{background:linear-gradient(#30343a,#202226)}
+.t-router .prow i{background:#111;box-shadow:inset 0 0 0 1px #7c8592}
+.t-nvr{background:linear-gradient(#16171a,#0d0e10)}
+.bays{display:grid;gap:2px;grid-auto-flow:column}
+.bays i{display:block;width:22px;background:linear-gradient(#3a3e45,#2a2d32);border-radius:1px;box-shadow:inset 0 0 0 1px #4d525b}
+.t-server{background:linear-gradient(#2c3036,#1b1d21)}
+.t-ups{background:linear-gradient(#1b1d21,#0f1012)}
+.lcd{width:34px;height:20px;background:linear-gradient(#2a78ff,#1450c8);border-radius:2px;box-shadow:inset 0 0 0 2px #0a1f55;font:700 6px/20px monospace;color:#cfe3ff;text-align:center}
+.grill{flex:1;align-self:stretch;margin:4px 0;background:radial-gradient(circle,#000 1.1px,transparent 1.5px) 0 0/5px 5px;opacity:.9}
+.t-pdu{background:#1d1f24}
+.outlets{display:flex;gap:5px}.outlets i{display:block;width:13px;height:12px;background:#0d0e10;border-radius:2px;box-shadow:inset 0 0 0 1px #4a4f58}
+.sw-red{width:13px;height:12px;background:#d32424;border-radius:2px;box-shadow:inset 0 -3px 0 #8e1010}
+.t-fan .fans{display:flex;gap:16px;margin:auto}
+.fans i{display:block;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#555 2px,transparent 2.5px),repeating-conic-gradient(#2c2f35 0 30deg,#4a4e56 30deg 60deg);box-shadow:0 0 0 1px #5b606a}
+.t-cablemgr{background:#141518}
+.rings{display:flex;justify-content:space-around;width:100%}
+.rings i{display:block;width:16px;height:12px;border:2px solid #31343a;border-top:none;border-radius:0 0 4px 4px;margin-top:2px}
+.t-brush{background:#121315}
+.brushs{flex:1;height:5px;border-radius:3px;background:repeating-linear-gradient(90deg,#3a3d43 0 1px,#1c1d20 1px 2px)}
+.t-vent{background:radial-gradient(circle,#000 1.2px,transparent 1.6px) 0 0/5px 5px,#2a2c31}
+.t-blank{background:linear-gradient(#25272c,#1a1b1f)}
+.t-shelf{background:transparent;box-shadow:none}
+.t-shelf .tray{position:absolute;left:9px;right:9px;bottom:0;height:5px;background:linear-gradient(#5b5f67,#33363b)}
+.t-other{background:linear-gradient(#3b3f46,#2a2d32)}
+.nm{font-size:9px;color:#d8dbe2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t-pp .nm{color:#333}
+/* rear */
+.rear .dv{background:#202227;filter:saturate(.9)}
+.rear .t-pp,.rear .t-fiberpp{background:repeating-linear-gradient(90deg,var(--cc,#1f6fd6) 0 2px,#1a1c20 2px 6px)}
+.rear .t-cablemgr{background:#101113}
+.inlet{width:15px;height:11px;background:#0b0c0e;border-radius:2px;box-shadow:inset 0 0 0 1px #6b717c;position:relative;flex:none}
+.inlet::after{content:"";position:absolute;left:3px;right:3px;top:4px;height:3px;background:repeating-linear-gradient(90deg,#9aa 0 2px,transparent 2px 4px)}
+.cord{width:22px;height:3px;border-radius:2px;flex:none}
+.links{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:visible}
+.links path{fill:none;stroke-width:2.2;stroke-linecap:round;opacity:.9}
+.links circle{stroke:#fff;stroke-width:1}
+
+/* rear callouts */
+.rwrap{position:relative;display:flex;gap:0;justify-content:flex-start}
+.co{position:relative;width:206px;flex:none}
+.co .cl{position:absolute;left:24px;right:0;font-size:11px;font-weight:600;line-height:1.2;transform:translateY(-50%)}
+.co .cl:hover{text-decoration:underline;cursor:pointer}
+.colines{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.colines path{fill:none;stroke-width:1.4}
+.legend2{margin-top:12px;border:1.4px solid var(--pan);border-radius:7px;padding:8px 12px}
+.legend2 h5{margin:0 0 6px;text-align:center;color:var(--blue);font-size:12px}
+.lg{display:grid;grid-template-columns:1fr 1fr;gap:3px 18px;font-size:11.5px}
+.lg span{display:flex;align-items:center;gap:8px}
+.lg i{display:block;width:30px;height:3px;border-radius:2px;flex:none}
+
+/* tables */
+table.t{width:100%;border-collapse:collapse;font-size:12px}
+table.t th,table.t td{border:1px solid var(--line);padding:4px 7px;text-align:left;vertical-align:middle}
+table.t th{background:#eef2fb;color:var(--navy);font-weight:700;font-size:11.5px;text-align:center}
+table.t td.c{text-align:center}
+table.t td.k{width:35%;font-size:11.5px}
+table.t td input{font-size:11.5px}
+table.t input{width:100%;border:1px dashed transparent;background:transparent;padding:1px 3px;border-radius:3px}
+table.t input:hover,table.t input:focus{border-color:#b9c6e6;outline:none;background:#fbfcff}
+table.t tr.hl td{background:#fff4cf}
+.inv td{cursor:pointer}
+ul.notes{margin:0;padding-left:18px;font-size:12px}
+ul.notes li{margin:3px 0}
+.muted{color:var(--mut)}
+
+/* symbols & dims */
+.syms{display:flex;flex-wrap:wrap;gap:6px 4px;justify-content:space-around}
+.sym{display:flex;flex-direction:column;align-items:center;gap:4px;width:84px;font-size:11.5px;text-align:center}
+.sym svg{width:54px;height:34px}
+.dims{display:flex;justify-content:space-around;align-items:flex-end}
+.dims figure{margin:0;text-align:center}
+.dims figcaption{font-size:11.5px;font-weight:700;color:var(--blue);margin-bottom:4px}
+.dims text{font-size:10px;fill:#333}
+
+/* drawer */
+#drawer h3{margin:0 0 2px;font-size:16px;color:var(--navy);display:flex;align-items:center;gap:8px}
+#drawer h3 .x{margin-left:auto;border:none;background:none;font-size:20px;line-height:1;color:#778}
+#drawer .pos{font-size:12px;color:var(--mut);margin-bottom:10px}
+.fld{display:block;margin:0 0 9px}
+.fld>span{display:block;font-size:11.5px;color:var(--mut);margin-bottom:3px}
+.fld input,.fld select,.fld textarea{width:100%;border:1px solid #cdd5e6;border-radius:6px;padding:6px 8px;background:#fff}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:2px solid #9db4ef;border-color:#7d97da}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chk{display:flex;align-items:center;gap:7px;font-size:12.5px;margin:2px 0 10px}
+.btns{display:flex;gap:8px;margin:6px 0 12px}
+.btn{border:1px solid #c8d2ea;background:#f4f7fd;border-radius:7px;padding:6px 12px}
+.btn:hover{background:#e7edfb}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.pri:hover{background:#1d3c90}
+.btn.dan{color:#b42323;border-color:#efc1c1;background:#fff6f6}
+.btn.dan:hover{background:#fde8e8}
+.lnk{display:flex;align-items:center;gap:7px;font-size:12px;padding:5px 0;border-bottom:1px solid #eef1f7}
+.lnk i{width:18px;height:3px;border-radius:2px;flex:none}
+.lnk b{font-weight:600}
+.lnk button{margin-left:auto;border:none;background:none;color:#b42323;font-size:15px}
+.box{border:1px solid #e1e7f3;border-radius:8px;padding:9px 10px;margin-top:6px;background:#fafbfe}
+.keys{font-size:11px;color:var(--mut);margin-top:12px}
+h4.sec{margin:14px 0 6px;font-size:12px;letter-spacing:.4px;color:var(--navy);text-transform:uppercase}
+
+/* modal, toast, drag */
+#modal{position:fixed;inset:0;background:rgba(12,20,50,.42);display:flex;align-items:center;justify-content:center;z-index:50}
+#modal[hidden]{display:none}
+.mbox{background:#fff;border-radius:12px;padding:18px 20px;width:min(560px,92vw);max-height:88vh;overflow:auto;box-shadow:0 18px 50px rgba(0,0,0,.3)}
+.mbox h3{margin:0 0 12px;color:var(--navy);font-size:17px}
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tgrid button{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px solid #dbe2f1;background:#fafbfe;border-radius:8px;padding:8px 4px;font-size:11.5px}
+.tgrid button:hover{background:#eef3ff;border-color:#a9bce8}
+.tgrid svg{width:46px;height:28px}
+.mfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1b2340;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
+#toast.on{opacity:1}
+.ghost{position:fixed;z-index:70;pointer-events:none;background:#1b2c72;color:#fff;font-size:11px;padding:3px 8px;border-radius:5px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.drop{position:absolute;left:0;right:0;z-index:5;border:2px dashed var(--ok);background:rgba(31,157,85,.25);pointer-events:none}
+.drop.bad{border-color:var(--bad);background:rgba(214,58,58,.25)}
+
+/* ---------- touch & mobile ---------- */
+.mb{display:none}
+#fab{display:none}
+.dv,.pal-item{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.dv.armed{outline:2px solid var(--acc);box-shadow:0 0 0 4px rgba(255,183,3,.35)}
+.mvbtns{display:flex;gap:8px;margin:0 0 10px}.mvbtns .btn{flex:1}
+.mhint{display:none}
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.menu button{text-align:left;padding:11px 12px;border:1px solid #dbe2f1;background:#fafbfe;border-radius:9px;font-size:14px}
+.menu button:disabled{opacity:.4}
+@media (hover:none){ .slot{background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(255,255,255,.05) 6px 7px)} .slot::after{content:"+";position:absolute;inset:0;text-align:center;color:rgba(255,183,3,.35);line-height:var(--uh);font-size:12px} }
+@media (max-width:900px){
+  body{font-size:14px}
+  #bar{height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 8px 0;gap:4px}
+  #bar .dk,#status,#bar .sep,.zoom{display:none!important}
+  #bar .mb{display:inline-block}
+  #bar .logo{margin-right:2px}#bar .logo span{display:none}
+  #bar select{flex:1;max-width:none;min-width:0;font-size:14px;padding:7px 8px}
+  #bar .tb{padding:7px 10px;font-size:16px}
+  #main{height:calc(100% - 52px - env(safe-area-inset-top))}
+  #palette{display:none}
+  #stage{padding:8px 8px calc(90px + env(safe-area-inset-bottom))}
+  #stage.sheeton{padding-bottom:64vh}
+  #sheet{width:auto!important;zoom:1!important;padding:10px 8px;border-radius:8px}
+  .hdr .h1{font-size:18px}.hdr .h2{font-size:13px}
+  .row1,.row2{grid-template-columns:minmax(0,1fr)}
+  .row1>*,.row2>*,.rcol>*{min-width:0}
+  .pan{overflow:hidden}
+  .row2{margin-top:12px}
+  .fwrap,.rwrap{justify-content:flex-start;width:max-content;margin:0 auto}
+  .pan{padding:10px 8px}
+  .pan h3{font-size:13.5px}
+  .syms .sym{width:74px}
+  .dims{flex-wrap:wrap;gap:10px}
+  .mhint{display:block;font-size:12px;color:var(--mut);text-align:center;margin:-4px 0 8px}
+  #drawer{position:fixed;left:0;right:0;bottom:0;width:auto;max-height:62vh;z-index:40;border:none;border-radius:16px 16px 0 0;box-shadow:0 -10px 30px rgba(10,20,60,.25);padding:8px 16px calc(16px + env(safe-area-inset-bottom))}
+  #drawer::before{content:"";display:block;width:44px;height:5px;border-radius:3px;background:#cfd6e6;margin:0 auto 8px}
+  .fld input,.fld select,.fld textarea{font-size:16px;padding:9px 10px}
+  .btn{padding:9px 14px}
+  #fab{display:flex;position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;border:none;background:var(--acc);color:#1b1b1b;font-size:30px;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.3);z-index:30}
+  #stage.sheeton ~ #fab,body.sheet #fab{display:none}
+  .tgrid{grid-template-columns:repeat(3,1fr)}
+  .mbox{padding:16px}
+}
+@media (max-width:600px){ .fwrap .desc{display:none} }
+
+/* print */
+@media print{
+  @page{size:A3 landscape;margin:8mm}
+  body{background:#fff;overflow:visible;height:auto}
+  #bar,#palette,#drawer,#modal,#toast,.warns,.pedit,.slot{display:none!important}
+  #main{display:block;height:auto}
+  #stage{overflow:visible;padding:0}
+  #sheet{zoom:var(--pz,.9)!important;box-shadow:none;margin:0;padding:0}
+  .dv.sel{outline:none}
+  .dc.on,table.t tr.hl td{background:transparent}
+  .hdr textarea,table.t input{border-color:transparent!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<header id="bar"></header>
+<div id="main">
+  <aside id="palette"></aside>
+  <div id="stage"><div id="sheet"></div></div>
+  <aside id="drawer" hidden></aside>
+</div>
+<button id="fab" data-a="addMenu" aria-label="+">＋</button>
+<div id="modal" hidden></div>
+<div id="toast"></div>
+<input type="file" id="imp" accept=".json,application/json" hidden>
+<script src="i18n.js"></script>
+<script>
+"use strict";
+const VERSION = "1.1.0";
+const isMobile = () => matchMedia("(max-width: 900px)").matches;
+let installEvt = null;
+const KEY = "rackulayout.v1";
+const UH = 20, TOP = 26;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = p => p + Math.random().toString(36).slice(2, 9);
+const num = (v, d = 0) => { const n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : d; };
+
+const CABLES = [["fiber","#7d3cc8"],["fiberlc","#b07be0"],["data","#1f6fd6"],["poe","#e0661b"],["power","#d7262e"],["mgmt","#1f9d4c"]];
+const CC = Object.fromEntries(CABLES);
+// h: default height (U), ports, inv: show in equipment list, cable: default rear cable, w/kg: rough default power/weight
+const TYPES = {
+  pp:{h:2,ports:48,inv:1,cable:"data",w:0,kg:2}, fiberpp:{h:1,ports:24,inv:1,cable:"fiberlc",w:0,kg:1.5},
+  cablemgr:{h:1,inv:0,w:0,kg:1}, brush:{h:1,inv:0,w:0,kg:.5},
+  coresw:{h:1,ports:48,inv:1,cable:"fiber",w:150,kg:5}, sw:{h:1,ports:48,inv:1,cable:"fiber",w:120,kg:4.5},
+  fw:{h:1,ports:10,inv:1,cable:"data",w:60,kg:4}, router:{h:1,ports:6,inv:1,cable:"data",w:40,kg:3},
+  nvr:{h:2,inv:1,cable:"poe",w:80,kg:8}, server:{h:2,inv:1,cable:"data",w:450,kg:20},
+  ups:{h:3,inv:1,cable:"power",w:0,kg:45}, pdu:{h:1,inv:1,cable:"power",w:0,kg:2},
+  fan:{h:1,inv:1,w:60,kg:3}, vent:{h:1,inv:0,w:0,kg:.5}, blank:{h:1,inv:0,w:0,kg:.5},
+  shelf:{h:1,inv:1,w:0,kg:3}, other:{h:1,inv:1,w:50,kg:3}
+};
+const TYPE_ORDER = Object.keys(TYPES);
+const PORTED = new Set(["pp","fiberpp","coresw","sw","fw","router"]);
+
+/* ---------- state ---------- */
+let store = load();
+let sel = null;
+let hist = [], fut = [];
+function t(k, v){ const L = I18N[store.lang] || I18N.az; let s = L[k] ?? I18N.az[k] ?? k; if (v) for (const x in v) s = s.split("{"+x+"}").join(v[x]); return s; }
+function tq(k){ const L = I18N[store.lang] || I18N.az; return L[k] ?? I18N.az[k] ?? ""; }
+function load(){
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.racks)) return s; } catch(e){}
+  return {lang:"az", zoom:1, racks:[], cur:null, fresh:true};
+}
+function persist(){ try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e){} }
+function R(){ return store.racks.find(r => r.id === store.cur) || store.racks[0]; }
+function dev(id){ const r = R(); return r && r.devices.find(d => d.id === id); }
+function commit(fn){
+  hist.push(JSON.stringify(store.racks)); if (hist.length > 100) hist.shift(); fut = [];
+  fn(); fix(); persist(); render();
+}
+function undo(){ if (!hist.length) return; fut.push(JSON.stringify(store.racks)); store.racks = JSON.parse(hist.pop()); fix(); persist(); render(); }
+function redo(){ if (!fut.length) return; hist.push(JSON.stringify(store.racks)); store.racks = JSON.parse(fut.pop()); fix(); persist(); render(); }
+function fix(){
+  if (!store.racks.length) store.racks.push(newRack());
+  if (!store.racks.some(r => r.id === store.cur)) store.cur = store.racks[0].id;
+  if (sel && !dev(sel)) sel = null;
+}
+
+function newRack(name){
+  return {id:uid("r"), name:name || t("newRack"), title:t("defTitle"), subtitle:t("defSub",{u:42}), u:42,
+    dims:{h:2000,w:600,d:1000}, load:800,
+    specs:{type:t("spd_type",{u:42}), door:t("spd_door"), cool:t("spd_cool"), ground:t("spd_ground"), entry:t("spd_entry")},
+    devices:[], links:[], notes:[]};
+}
+function mkDev(type, u){
+  const T = TYPES[type];
+  return {id:uid("d"), type, u, h:T.h, name:t("ty_"+type), model:"", ports:T.ports||0,
+    rear:tq("rl_"+type), cable:T.cable||"", power:T.w, weight:T.kg, va:type==="ups"?3000:0, inv:!!T.inv, note:""};
+}
+function sampleRack(){
+  const r = newRack(t("sampleName"));
+  r.title = t("sampleTitle"); r.subtitle = t("sampleSub");
+  const add = (type, u, x) => { const d = Object.assign(mkDev(type, u), x || {}); r.devices.push(d); return d; };
+  add("brush",42); add("cablemgr",41); add("fiberpp",40,{note:"24 Port"}); add("cablemgr",39);
+  add("pp",37); add("cablemgr",36); add("pp",34); add("cablemgr",33); add("pp",31); add("cablemgr",30);
+  add("vent",29,{name:t("ty_brush").split("/")[0].trim()+" / "+t("ty_vent")});
+  const core = add("coresw",28,{note:"10G Uplink"}), agg = add("sw",27,{note:"10G Uplink"});
+  const fw = add("fw",26,{model:"FORTINET",note:"NGFW"}), rt = add("router",25,{note:"Edge Router"});
+  const nvr = add("nvr",23,{model:"HIKVISION",note:"64ch"}), srv = add("server",21,{note:"Virtualization / File"});
+  add("fan",6,{note:"4 Fan"}); const pdu = add("pdu",5,{note:"Rack Mount (8-10)"}); const ups = add("ups",2,{model:"APC",va:3000,note:"3kVA"});
+  const L = (a,b,cable,label) => r.links.push({id:uid("l"), a:a.id, b:b.id, cable, label:label||""});
+  L(core,agg,"fiber","10G"); L(fw,core,"data"); L(rt,fw,"data","WAN"); L(nvr,agg,"poe"); L(srv,core,"data"); L(ups,pdu,"power");
+  r.notes = ["n1","n2","n3","n4","n5","n6"].map(k => t(k));
+  return r;
+}
+
+/* ---------- geometry ---------- */
+function occ(r, ex){ const a = new Array(r.u + 2).fill(null); r.devices.forEach(d => { if (d.id === ex) return; for (let u = d.u; u < d.u + d.h; u++) a[u] = d; }); return a; }
+function fits(r, u, h, ex){ if (u < 1 || u + h - 1 > r.u) return false; const o = occ(r, ex); for (let x = u; x < u + h; x++) if (o[x]) return false; return true; }
+function findSpot(r, h, pref, ex){
+  if (pref){ for (let b = pref; b > pref - h; b--) if (fits(r, b, h, ex)) return b;
+    for (let dd = 1; dd <= r.u; dd++){ if (fits(r, pref - h + 1 - dd, h, ex)) return pref - h + 1 - dd; if (fits(r, pref + dd, h, ex)) return pref + dd; } return 0; }
+  for (let b = r.u - h + 1; b >= 1; b--) if (fits(r, b, h, ex)) return b; return 0;
+}
+const topU = d => d.u + d.h - 1;
+const rangeTxt = d => d.h > 1 ? `U${d.u}–U${topU(d)}` : `U${d.u}`;
+
+/* ---------- device faces ---------- */
+function portRows(n, rows, grp){ let h = ""; const per = Math.ceil(n / rows);
+  for (let r = 0; r < rows; r++){ let row = ""; for (let i = 0; i < per; i++) row += `<i${i && grp && i % grp === 0 ? ' class="g"' : ""}></i>`; h += `<div class="prow">${row}</div>`; }
+  return `<div class="ports">${h}</div>`; }
+function face(d){
+  const m = d.model ? `<span class="brand${d.type==="fw"?" red":""}">${esc(d.model)}</span>` : "";
+  const n = Math.max(0, Math.min(96, d.ports|0));
+  switch (d.type){
+    case "pp": { const rows = n > 24 ? 2 : 1; return `<span class="lab"></span><div class="flex1"></div>${n?portRows(n, Math.min(rows, d.h*2), 6):""}<div class="flex1"></div><span class="lab"></span>`; }
+    case "fiberpp": { const pr = Math.ceil(n/2); let h = ""; for (let i = 0; i < pr; i++) h += `<i></i><i style="margin-right:${i<pr-1?5:0}px"></i>`; return `<div class="flex1"></div><div class="prow">${h}</div><div class="flex1"></div>`; }
+    case "coresw": case "sw": { const rows = n > 12 ? 2 : 1; return `<span class="led"></span>${m||`<span class="brand">${d.type==="coresw"?"L3":"SW"}</span>`}<div class="flex1"></div>${n?portRows(n, rows, 6):""}<div class="sfp"><i></i><i></i><i></i><i></i></div>`; }
+    case "fw": return `<span class="led"></span>${m}<div class="flex1"></div>${n?portRows(n, n>8?2:1, 0):""}`;
+    case "router": return `<span class="led"></span>${m||'<span class="brand">ROUTER</span>'}<div class="flex1"></div>${n?portRows(n, 1, 0):""}`;
+    case "nvr": { const b = Math.max(1, d.h*2); let h = ""; for (let i = 0; i < Math.min(8, b*2); i++) h += `<i style="height:${Math.min(14, d.h*UH/2-4)}px"></i>`; return `${m||'<span class="brand">NVR</span>'}<div class="flex1"></div><span class="led"></span><span class="led o"></span><div class="bays" style="grid-template-rows:repeat(${d.h>1?2:1},auto)">${h}</div>`; }
+    case "server": { const rows = Math.max(1, Math.min(4, d.h*2 - 1)); let h = ""; for (let i = 0; i < rows*4; i++) h += `<i style="height:${Math.max(5, (d.h*UH-8)/rows-2)}px"></i>`; return `<div class="bays" style="grid-template-rows:repeat(${rows},auto)">${h}</div><div class="flex1"></div>${m}<span class="led"></span>`; }
+    case "ups": return `${m||'<span class="brand">UPS</span>'}<div class="lcd">${d.va?Math.round(d.va/100)/10+"kVA":""}</div><span class="led"></span><div class="grill"></div>`;
+    case "pdu": return `<div class="outlets">${"<i></i>".repeat(8)}</div><div class="flex1"></div>${m}<span class="sw-red"></span>`;
+    case "fan": return `<div class="fans">${"<i></i>".repeat(4)}</div>`;
+    case "cablemgr": return `<div class="rings">${"<i></i>".repeat(8)}</div>`;
+    case "brush": return `<div class="brushs"></div>`;
+    case "shelf": return `<div class="tray"></div>${m||`<span class="nm">${esc(d.name)}</span>`}`;
+    case "vent": case "blank": return "";
+    default: return `${m}<span class="nm">${esc(d.name)}</span>`;
+  }
+}
+function rearFace(d){
+  const cc = CC[d.cable] || "#555";
+  switch (d.type){
+    case "pp": case "fiberpp": case "cablemgr": case "brush": case "vent": case "blank": case "shelf": return d.type==="shelf" ? `<div class="tray"></div>` : "";
+    case "pdu": return `<span class="inlet"></span><span class="cord" style="background:${CC.power}"></span><div class="flex1"></div>`;
+    case "ups": return `<div class="outlets">${"<i></i>".repeat(6)}</div><div class="flex1"></div><span class="inlet"></span><span class="cord" style="background:${CC.power}"></span>`;
+    case "fan": return `<div class="fans">${"<i></i>".repeat(4)}</div>`;
+    default: return `<div class="fans" style="gap:6px;margin:0">${"<i style='width:12px;height:12px'></i>".repeat(Math.min(3,d.h+1))}</div><div class="flex1"></div>${d.cable?`<span class="cord" style="background:${cc}"></span>`:""}<span class="inlet"></span>`;
+  }
+}
+
+/* ---------- icons ---------- */
+function icon(type){
+  const S = (b) => `<svg viewBox="0 0 54 34" fill="none" stroke="#2d3446" stroke-width="1.4" stroke-linejoin="round">${b}</svg>`;
+  const ports = (x,y,n,w=3) => { let s = ""; for (let i = 0; i < n; i++) s += `<rect x="${x+i*(w+1.6)}" y="${y}" width="${w}" height="3" fill="#2d3446" stroke="none"/>`; return s; };
+  switch (type){
+    case "pp": return S(`<rect x="3" y="9" width="48" height="16" rx="1.5" fill="#d9dce2"/>${ports(7,12,9)}${ports(7,18,9)}`);
+    case "fiberpp": return S(`<rect x="3" y="11" width="48" height="12" rx="1.5" fill="#33363c"/>${ports(8,15,8,3).replace(/#2d3446/g,"#1d8ff0")}`);
+    case "coresw": case "sw": return S(`<rect x="3" y="11" width="48" height="12" rx="1.5" fill="#f2f4f8"/>${ports(7,14,7)}${ports(7,18.5,7)}<rect x="40" y="14" width="7" height="7" fill="#c9cfdb"/>`);
+    case "fw": return S(`<rect x="6" y="7" width="34" height="22" fill="#e9b7a9"/><path d="M6 14h34M6 21h34M17 7v7M29 7v7M12 14v7M23 14v7M35 14v7M17 21v8M29 21v8"/><path d="M40 10l8 3v7c0 5-4 8-8 9-4-1-8-4-8-9v-7z" fill="#fff"/><path d="M40 16l1.4 3h3l-2.4 2 1 3-3-2-3 2 1-3-2.4-2h3z" fill="#2d3446" stroke="none"/>`);
+    case "router": return S(`<ellipse cx="27" cy="12" rx="19" ry="6" fill="#e3e6ec"/><path d="M8 12v10c0 3.3 8.5 6 19 6s19-2.7 19-6V12"/><path d="M18 11h7M29 11h7M22 9l3 2-3 2M32 9l-3 2 3 2"/>`);
+    case "nvr": return S(`<rect x="3" y="11" width="48" height="13" rx="2" fill="#e6e9ef"/><rect x="7" y="15" width="12" height="5" fill="#2d3446" stroke="none"/><circle cx="42" cy="17.5" r="1.5" fill="#2d3446"/><circle cx="46" cy="17.5" r="1.5" fill="#2d3446"/>`);
+    case "server": return S(`<rect x="15" y="3" width="24" height="28" rx="2" fill="#e6e9ef"/><path d="M19 9h16M19 13h16M19 17h16"/><circle cx="27" cy="25" r="1.6" fill="#2d3446"/>`);
+    case "ups": return S(`<rect x="13" y="3" width="28" height="28" rx="2" fill="#e6e9ef"/><rect x="18" y="8" width="18" height="9" fill="#bcd6ff"/><text x="27" y="15" font-size="6" text-anchor="middle" fill="#2d3446" stroke="none" font-family="Arial">UPS</text><path d="M18 22h18M18 26h18"/>`);
+    case "pdu": return S(`<rect x="2" y="12" width="50" height="10" rx="2" fill="#e6e9ef"/>${ports(6,15.5,8,3.4)}<rect x="45" y="14.5" width="4" height="5" fill="#d7262e" stroke="none"/>`);
+    case "fan": return S(`<rect x="12" y="2" width="30" height="30" rx="3" fill="#e6e9ef"/><circle cx="27" cy="17" r="11"/><path d="M27 17c-2-6 3-9 5-7M27 17c6-1 8 4 5 6M27 17c-3 5-8 4-8 1M27 17c-6 0-7-5-4-7"/>`);
+    case "cablemgr": return S(`<rect x="3" y="11" width="48" height="12" rx="1.5" fill="#33363c"/><path d="M9 13v6h5v-6M20 13v6h5v-6M31 13v6h5v-6M42 13v6h5v-6" stroke="#cfd3da"/>`);
+    case "brush": return S(`<rect x="3" y="11" width="48" height="12" rx="1.5" fill="#33363c"/><path d="M9 17h36" stroke="#9aa0a8" stroke-width="3" stroke-dasharray="1 1"/>`);
+    case "vent": return S(`<rect x="3" y="11" width="48" height="12" rx="1.5" fill="#d9dce2"/><path d="M8 15h38M8 19h38" stroke-dasharray="1.5 2"/>`);
+    case "blank": return S(`<rect x="3" y="11" width="48" height="12" rx="1.5" fill="#33363c"/>`);
+    case "shelf": return S(`<path d="M5 22h44v4H5z" fill="#cfd3da"/><rect x="14" y="12" width="20" height="10" fill="#e6e9ef"/>`);
+    case "ground": return S(`<path d="M27 4v14M15 18h24M19 23h16M23 28h8"/>`);
+    default: return S(`<rect x="5" y="10" width="44" height="14" rx="2" fill="#e6e9ef"/><text x="27" y="20" font-size="8" text-anchor="middle" fill="#2d3446" stroke="none" font-family="Arial">?</text>`);
+  }
+}
+
+/* ---------- rendering ---------- */
+function render(){
+  document.documentElement.lang = store.lang;
+  document.title = "Rack U-Layout — " + (R()?.name || "");
+  renderBar(); renderPalette(); renderSheet(); renderDrawer(); applyZoom(); fitPanels();
+  $("#stage").classList.toggle("sheeton", !!sel); document.body.classList.toggle("sheet", !!sel);
+}
+// On phones the front/rear blocks are scaled down to the screen width.
+function growHdr(){ document.querySelectorAll(".hdr textarea").forEach(x => { x.style.height = "auto"; x.style.height = x.scrollHeight + "px"; }); }
+function fitPanels(){
+  growHdr();
+  document.querySelectorAll(".fwrap,.rwrap").forEach(w => {
+    w.style.zoom = "";
+    if (!isMobile()) return;
+    const avail = w.parentElement.clientWidth - 2, nat = w.scrollWidth;
+    if (nat > avail) w.style.zoom = (avail / nat).toFixed(3);
+  });
+}
+// After a tap on a phone, scroll so the chosen device is visible above the bottom sheet.
+function revealSel(){
+  if (!isMobile() || !sel) return;
+  requestAnimationFrame(() => { const el = document.querySelector(`.front .dv[data-id="${sel}"]`), st = $("#stage"); if (!el) return;
+    const er = el.getBoundingClientRect(), sr = st.getBoundingClientRect(), dh = $("#drawer").offsetHeight || 0;
+    const visTop = sr.top + 10, visBot = sr.bottom - dh - 10;
+    if (er.top < visTop || er.bottom > visBot) st.scrollBy({top: er.top - visTop - Math.max(0, (visBot - visTop - er.height) / 3), behavior:"smooth"}); });
+}
+function totals(r){
+  let used = 0, w = 0, kg = 0, va = 0;
+  r.devices.forEach(d => { used += d.h; kg += num(d.weight); if (d.type === "ups") va += num(d.va); else w += num(d.power); });
+  return {used, free:r.u - used, w:Math.round(w), kg:Math.round(kg*10)/10, va};
+}
+function renderBar(){
+  const r = R(), T = totals(r);
+  const B = (a, ic, k, extra="", cls="tb dk") => `<button class="${cls}" data-a="${a}" title="${t(k)}"${extra}>${ic} <span class="tx">${t(k)}</span></button>`;
+  $("#bar").innerHTML = `<div class="logo"><i></i><span>${t("appName")}</span></div>
+  <select id="rk-sel" title="${t("rackList")}">${store.racks.map(x => `<option value="${x.id}"${x.id===r.id?" selected":""}>${esc(x.name)} (${x.u}U)</option>`).join("")}</select>
+  ${B("newRack","＋","newRack")}${B("dupRack","⧉","dupRack")}${B("delRack","🗑","delRack",store.racks.length<2?" disabled":"")}${B("rackSettings","⚙","rackSettings")}
+  <span class="sep"></span>
+  ${B("undo","↶","undo",hist.length?"":" disabled","tb")}${B("redo","↷","redo",fut.length?"":" disabled")}
+  <span class="sep"></span>
+  <div class="zoom"><button class="tb" data-a="zout">−</button><span>${Math.round(store.zoom*100)}%</span><button class="tb" data-a="zin">＋</button><button class="tb" data-a="zfit">${t("fit")}</button></div>
+  <span class="grow dk"></span>
+  <div id="status"><span>${t("st_used",{a:"<b>"+T.used+"</b>",b:r.u})}</span><span>${t("st_free",{n:"<b>"+T.free+"</b>"})}</span><span>${t("st_power",{w:"<b>"+T.w+"</b>"})}</span><span>${t("st_weight",{kg:"<b>"+T.kg+"</b>"})}</span></div>
+  <span class="sep"></span>
+  ${installEvt?B("install","⤓","install","","tb dk pri"):""}
+  ${B("sample","★","sample")}${B("import","⤓","import")}${B("export","⤒","export")}${B("print","⎙","print")}
+  <button class="tb pri dk" data-a="pdf">${t("pdf")}</button>
+  ${B("settings","⚙","settings")}
+  <button class="tb mb" data-a="menu" title="${t("menu")}">☰</button>`;
+}
+function renderPalette(){
+  $("#palette").innerHTML = `<h4>${t("palTitle")}</h4><p>${t("palHint")}</p>` +
+    TYPE_ORDER.map(k => `<div class="pal-item" data-type="${k}" title="${esc(t("ty_"+k))}">${icon(k)}<span>${esc(t("sh_"+k))}</span><small>${TYPES[k].h}U</small></div>`).join("");
+}
+function warnings(r){
+  const T = totals(r), W = [];
+  if (r.load && T.kg > r.load) W.push(["err", t("w_weight",{kg:T.kg,max:r.load})]);
+  r.devices.filter(d => d.type === "ups").forEach(d => { if (d.u > Math.ceil(r.u/3)) W.push(["", t("w_upsHigh",{u:d.u})]); });
+  if (T.va > 0){ const p = Math.round(T.w / (T.va * 0.9) * 100); if (p >= 80) W.push([p > 100 ? "err" : "", t("w_power",{w:T.w,p})]); }
+  const p = Math.round(T.used / r.u * 100); if (p >= 90) W.push(["", t("w_full",{p})]);
+  return W;
+}
+function renderSheet(){
+  const r = R(), U = r.u;
+  const W = warnings(r);
+  // U column
+  let uc = `<div class="hd"><b>U</b></div>`; for (let u = U; u >= 1; u--) uc += `<div class="uc">${u}</div>`;
+  // description column
+  const o = occ(r); let dc = `<div class="hd"><b>${t("desc")}</b></div>`;
+  for (let u = U; u >= 1;){
+    const d = o[u];
+    if (d){ dc += `<div class="dc${sel===d.id?" on":""}" data-id="${d.id}" style="height:${d.h*UH}px" title="${esc(d.name)}"><span>${esc(d.name)}${d.model&&d.type!=="pp"?` <span class="muted">– ${esc(d.model)}</span>`:""}</span></div>`; u = d.u - 1; }
+    else { let n = 0; while (u - n >= 1 && !o[u - n]) n++; dc += `<div class="dc e" style="height:${n*UH}px">${t("empty")}</div>`; u -= n; }
+  }
+  $("#sheet").innerHTML = `
+  <div class="hdr"><textarea class="h1" data-f="title" rows="1" spellcheck="false">${esc(r.title)}</textarea><textarea class="h2" data-f="subtitle" rows="1" spellcheck="false">${esc(r.subtitle)}</textarea></div>
+  ${W.length?`<div class="warns">${W.map(w => `<div class="warn ${w[0]}">⚠ ${esc(w[1])}</div>`).join("")}</div>`:""}
+  <div class="row1">
+    <section class="pan"><h3>${t("front")}</h3><div class="mhint">${t("tapHint")}</div>
+      <div class="fwrap" style="--top:${TOP}px"><div class="ucol">${uc}</div>${rackHtml(r,false)}<div class="desc">${dc}</div></div>
+    </section>
+    <section class="pan"><h3>${t("rear")}</h3>
+      <div class="rwrap" style="--top:${TOP}px">${rackHtml(r,true)}${calloutHtml(r)}</div>
+      <div class="legend2"><h5>${t("cableColors")}</h5><div class="lg">${CABLES.map(([k,c]) => `<span><i style="background:${c}"></i>${esc(t("cb_"+k))}</span>`).join("")}</div></div>
+    </section>
+    <div class="rcol">
+      <section class="pan"><h3>${t("specs")}</h3>${specsHtml(r)}</section>
+      <section class="pan"><h3>${t("inv")}</h3>${invHtml(r)}</section>
+      <section class="pan"><h3>${t("notes")}</h3><button class="pedit" data-a="notes">✎</button>
+        ${r.notes.length?`<ul class="notes">${r.notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul>`:`<div class="muted">—</div>`}</section>
+    </div>
+  </div>
+  <div class="row2">
+    <section class="pan"><h3>${t("symbols")}</h3>${symbolsHtml(r)}</section>
+    <section class="pan"><h3>${t("dims")}</h3>${dimsHtml(r)}</section>
+  </div>`;
+}
+function rackHtml(r, rear){
+  const U = r.u; let h = "";
+  if (!rear){ const o = occ(r); for (let u = 1; u <= U; u++) if (!o[u]) h += `<div class="slot" data-u="${u}" style="bottom:${(u-1)*UH}px" title="U${u}"></div>`; }
+  r.devices.forEach(d => {
+    const cc = CC[d.cable] || "#1f6fd6";
+    h += `<div class="dv t-${d.type}${sel===d.id?" sel":""}" data-id="${d.id}" style="bottom:${(d.u-1)*UH}px;height:${d.h*UH-1}px;--cc:${cc}" title="${esc(d.name)} · ${rangeTxt(d)}">${rear?rearFace(d):face(d)}</div>`;
+  });
+  if (rear) h += linksSvg(r);
+  return `<div class="rk ${rear?"rear":"front"}"><div class="bay" style="height:${U*UH}px">${h}</div></div>`;
+}
+function devY(r, d){ return (r.u - topU(d)) * UH + d.h * UH / 2; }
+function linksSvg(r){
+  const W = 272, H = r.u * UH; let p = "";
+  r.links.forEach((l, i) => {
+    const a = dev2(r, l.a), b = dev2(r, l.b); if (!a || !b) return;
+    const ya = devY(r, a), yb = devY(r, b), x0 = W - 40, xb = W - 16 - (i % 6) * 4 + 6;
+    const c = CC[l.cable] || "#888";
+    p += `<path d="M${x0} ${ya} C${xb+30} ${ya}, ${xb+30} ${yb}, ${x0} ${yb}" stroke="${c}"/><circle cx="${x0}" cy="${ya}" r="2.4" fill="${c}"/><circle cx="${x0}" cy="${yb}" r="2.4" fill="${c}"/>`;
+  });
+  return `<svg class="links" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${p}</svg>`;
+}
+function dev2(r, id){ return r.devices.find(d => d.id === id); }
+function calloutHtml(r){
+  const H = TOP + r.u * UH + 22;
+  const items = r.devices.filter(d => (d.rear || "").trim()).map(d => ({d, y: TOP + devY(r, d)})).sort((a,b) => a.y - b.y);
+  const gap = 27; let prev = -1e9;
+  items.forEach(it => { it.ly = Math.max(it.y, prev + gap); prev = it.ly; });
+  let lim = H - 10; for (let i = items.length - 1; i >= 0; i--){ if (items[i].ly > lim) items[i].ly = lim; lim = items[i].ly - gap; }
+  let lines = "", labels = "";
+  items.forEach(it => {
+    const c = CC[it.d.cable] || "#5d6880";
+    lines += `<path d="M286 ${it.y} H302 L318 ${it.ly} H326" stroke="${c}"/><circle cx="286" cy="${it.y}" r="2" fill="${c}"/>`;
+    labels += `<div class="cl" data-id="${it.d.id}" style="top:${it.ly}px;color:${c}">${esc(it.d.rear)}</div>`;
+  });
+  return `<svg class="colines" width="506" height="${H}">${lines}</svg><div class="co" style="height:${H}px">${labels}</div>`;
+}
+function specsHtml(r){
+  const row = (k, key, val, ro) => `<tr><td class="k">${t(k)}</td><td>${ro?esc(val):`<input data-spec="${key}" value="${esc(val)}" spellcheck="false">`}</td></tr>`;
+  return `<table class="t">${row("sp_type","type",r.specs.type)}${row("sp_dims","",`${r.dims.h} x ${r.dims.w} x ${r.dims.d} mm`,1)}${row("sp_door","door",r.specs.door)}${row("sp_cool","cool",r.specs.cool)}
+  ${row("sp_load","",`≥ ${r.load} ${store.lang==="ru"?"кг":"kg"}`,1)}${row("sp_ground","ground",r.specs.ground)}${row("sp_entry","entry",r.specs.entry)}</table>`;
+}
+function invRows(r){
+  const groups = new Map();
+  r.devices.filter(d => d.inv).sort((a,b) => topU(b) - topU(a)).forEach(d => {
+    const k = [d.type, d.name, d.model, d.h, d.ports, d.note, d.va].join("|");
+    if (!groups.has(k)) groups.set(k, {d, q:0, ids:[]});
+    const g = groups.get(k); g.q++; g.ids.push(d.id);
+  });
+  return [...groups.values()];
+}
+function autoNote(d, q){
+  if (d.note) return d.note;
+  if ((d.type === "pp" || d.type === "fiberpp") && d.ports) return q > 1 ? t("qPortsMulti",{p:d.ports,q,t:d.ports*q}) : t("qPorts",{p:d.ports});
+  if (d.type === "ups" && d.va) return (d.va/1000) + "kVA";
+  return d.model || "";
+}
+function invHtml(r){
+  const rows = invRows(r);
+  if (!rows.length) return `<div class="muted" style="text-align:center">${t("invEmpty")}</div>`;
+  return `<table class="t inv"><tr><th>#</th><th>${t("inv_dev")}</th><th>U</th><th>${t("inv_qty")}</th><th>${t("inv_note")}</th></tr>${rows.map((g,i) =>
+    `<tr data-id="${g.d.id}"${g.ids.includes(sel)?' class="hl"':""}><td class="c">${i+1}</td><td>${esc(g.d.name.toUpperCase())}</td><td class="c">${g.d.h}U</td><td class="c">${g.q}</td><td>${esc(autoNote(g.d,g.q))}</td></tr>`).join("")}</table>`;
+}
+function symbolsHtml(r){
+  const used = new Set(r.devices.map(d => d.type));
+  const cabUsed = new Set([...r.devices.map(d => d.cable), ...r.links.map(l => l.cable)].filter(Boolean));
+  const cab = CABLES.filter(([k]) => cabUsed.has(k)).map(([k,c]) => `<div class="sym"><svg viewBox="0 0 54 34"><path d="M6 17H48" stroke="${c}" stroke-width="3.5" stroke-linecap="round"/></svg>${esc(t("cb_"+k).split("–")[0].trim())}</div>`).join("");
+  const skip = new Set(["blank","brush","vent","cablemgr"]);
+  const devs = TYPE_ORDER.filter(k => used.has(k) && !skip.has(k)).map(k => `<div class="sym">${icon(k)}${esc(t("sh_"+k))}</div>`).join("");
+  return `<div class="syms">${cab}${devs}<div class="sym">${icon("ground")}${esc(t("sh_ground"))}</div></div>`;
+}
+function dimsHtml(r){
+  const {h, w, d} = r.dims, sc = 120 / Math.max(h, 1);
+  const box = (bw, bh, lw, lh, inner) => {
+    const W = Math.max(28, bw*sc), Hh = Math.max(28, bh*sc), x = 34, y = 6;
+    return `<svg width="${W+60}" height="${Hh+30}"><defs><marker id="ar" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 1L7 4 0 7z" fill="#555"/></marker></defs>
+    <rect x="${x}" y="${y}" width="${W}" height="${Hh}" fill="#e9ecf1" stroke="#2d3446" stroke-width="1.6" rx="2"/>${inner(x,y,W,Hh)}
+    <line x1="${x-12}" y1="${y}" x2="${x-12}" y2="${y+Hh}" stroke="#555" marker-start="url(#ar)" marker-end="url(#ar)"/><text x="${x-15}" y="${y+Hh/2}" text-anchor="end" dominant-baseline="middle" transform="rotate(-90 ${x-16} ${y+Hh/2})" style="text-anchor:middle">${lh} mm</text>
+    <line x1="${x}" y1="${y+Hh+12}" x2="${x+W}" y2="${y+Hh+12}" stroke="#555" marker-start="url(#ar)" marker-end="url(#ar)"/><text x="${x+W/2}" y="${y+Hh+25}" text-anchor="middle">${lw} mm</text></svg>`;
+  };
+  const glass = (x,y,W,H) => `<rect x="${x+4}" y="${y+4}" width="${W-8}" height="${H-8}" fill="#cfd8e6" stroke="#2d3446" stroke-width=".8"/>`;
+  const side = (x,y,W,H) => `<rect x="${x+3}" y="${y+3}" width="${W-6}" height="${H-6}" fill="#d9dee7" stroke="#2d3446" stroke-width=".6"/>`;
+  const top = (x,y,W,H) => `<circle cx="${x+5}" cy="${y+5}" r="2" fill="#2d3446"/><circle cx="${x+W-5}" cy="${y+5}" r="2" fill="#2d3446"/><circle cx="${x+5}" cy="${y+H-5}" r="2" fill="#2d3446"/><circle cx="${x+W-5}" cy="${y+H-5}" r="2" fill="#2d3446"/>`;
+  return `<div class="dims"><figure><figcaption>${t("dimFront")}</figcaption>${box(w,h,w,h,glass)}</figure><figure><figcaption>${t("dimSide")}</figcaption>${box(d,h,d,h,side)}</figure><figure><figcaption>${t("dimTop")}</figcaption>${box(w,d,w,d,top)}</figure></div>`;
+}
+
+/* ---------- drawer ---------- */
+function renderDrawer(){
+  const el = $("#drawer"), d = sel && dev(sel), r = R();
+  if (!d){ el.hidden = true; el.innerHTML = ""; return; }
+  el.hidden = false;
+  const opt = (v, l, cur) => `<option value="${esc(v)}"${String(v)===String(cur)?" selected":""}>${esc(l)}</option>`;
+  const my = r.links.filter(l => l.a === d.id || l.b === d.id);
+  const others = r.devices.filter(x => x.id !== d.id).sort((a,b) => topU(b) - topU(a));
+  el.innerHTML = `<h3>${icon(d.type).replace("<svg","<svg width='38' height='24'")}${t("d_title")}<button class="x" data-a="close" title="${t("close")}">×</button></h3>
+  <div class="pos">${t("d_range",{r:rangeTxt(d)})}</div>
+  <label class="fld"><span>${t("d_type")}</span><select data-k="type">${TYPE_ORDER.map(k => opt(k, t("ty_"+k), d.type)).join("")}</select></label>
+  <label class="fld"><span>${t("d_name")}</span><input data-k="name" value="${esc(d.name)}"></label>
+  <label class="fld"><span>${t("d_model")}</span><input data-k="model" value="${esc(d.model)}"></label>
+  <div class="two"><label class="fld"><span>${t("d_bottom")}</span><input data-k="u" type="number" min="1" max="${r.u}" value="${d.u}"></label>
+  <label class="fld"><span>${t("d_height")}</span><input data-k="h" type="number" min="1" max="${r.u}" value="${d.h}"></label></div>
+  ${PORTED.has(d.type)?`<label class="fld"><span>${t("d_ports")}</span><input data-k="ports" type="number" min="0" max="96" value="${d.ports}"></label>`:""}
+  <label class="fld"><span>${t("d_rear")}</span><input data-k="rear" value="${esc(d.rear)}"></label>
+  <label class="fld"><span>${t("d_cable")}</span><select data-k="cable">${opt("",t("cb_none"),d.cable)}${CABLES.map(([k]) => opt(k, t("cb_"+k), d.cable)).join("")}</select></label>
+  <div class="two"><label class="fld"><span>${t("d_power")}</span><input data-k="power" type="number" min="0" value="${d.power}"></label>
+  <label class="fld"><span>${t("d_weight")}</span><input data-k="weight" type="number" min="0" step="0.1" value="${d.weight}"></label></div>
+  ${d.type==="ups"?`<label class="fld"><span>${t("d_va")}</span><input data-k="va" type="number" min="0" step="100" value="${d.va}"></label>`:""}
+  <label class="chk"><input type="checkbox" data-k="inv"${d.inv?" checked":""}> ${t("d_inv")}</label>
+  <label class="fld"><span>${t("d_note")}</span><input data-k="note" value="${esc(d.note)}" placeholder="${esc(autoNote(Object.assign({},d,{note:""}),1))}"></label>
+  <div class="mvbtns"><button class="btn" data-a="mvUp"${fits(r,d.u+1,d.h,d.id)?"":" disabled"}>${t("mvUp")}</button><button class="btn" data-a="mvDown"${fits(r,d.u-1,d.h,d.id)?"":" disabled"}>${t("mvDown")}</button></div>
+  <div class="btns"><button class="btn" data-a="dupDev">⧉ ${t("d_dup")}</button><button class="btn dan" data-a="delDev">🗑 ${t("d_del")}</button></div>
+  <h4 class="sec">${t("d_links")}</h4>
+  ${my.length?my.map(l => { const o = dev(l.a === d.id ? l.b : l.a); return `<div class="lnk"><i style="background:${CC[l.cable]||"#888"}"></i><span>→ <b>${esc(o?o.name:"?")}</b> <span class="muted">${o?rangeTxt(o):""}${l.label?" · "+esc(l.label):""}</span></span><button data-a="delLink" data-l="${l.id}" title="${t("d_del")}">×</button></div>`; }).join(""):`<div class="muted" style="font-size:12px">${t("noLinks")}</div>`}
+  ${others.length?`<div class="box"><label class="fld"><span>${t("d_to")}</span><select id="ln-to">${others.map(o => opt(o.id, `${rangeTxt(o)} · ${o.name}`, "")).join("")}</select></label>
+  <div class="two"><label class="fld"><span>${t("d_cable")}</span><select id="ln-cab">${CABLES.map(([k]) => opt(k, t("cb_"+k), d.cable||"data")).join("")}</select></label>
+  <label class="fld"><span>${t("d_linkLbl")}</span><input id="ln-lbl"></label></div>
+  <button class="btn pri" data-a="addLink">＋ ${t("d_addLink")}</button></div>`:""}
+  <div class="keys">${t("d_keys")}</div>`;
+}
+function updateDev(k, raw){
+  const r = R(), d = dev(sel); if (!d) return;
+  if (k === "u" || k === "h"){
+    const nu = k === "u" ? Math.round(num(raw, d.u)) : d.u, nh = k === "h" ? Math.max(1, Math.round(num(raw, d.h))) : d.h;
+    if (!fits(r, nu, nh, d.id)){ toast(t("badPos")); renderDrawer(); return; }
+    return commit(() => { d.u = nu; d.h = nh; });
+  }
+  if (k === "type"){
+    const T = TYPES[raw], old = d.type;
+    return commit(() => {
+      if (d.name === t("ty_"+old)) d.name = t("ty_"+raw);
+      if ((d.rear||"") === tq("rl_"+old)) d.rear = tq("rl_"+raw);
+      if ((d.cable||"") === (TYPES[old].cable||"")) d.cable = T.cable || "";
+      if (d.power === TYPES[old].w) d.power = T.w;
+      if (d.weight === TYPES[old].kg) d.weight = T.kg;
+      if (PORTED.has(raw) && (!d.ports || d.ports === (TYPES[old].ports||0))) d.ports = T.ports || 0;
+      if (raw === "ups" && !d.va) d.va = 3000;
+      d.inv = !!T.inv; d.type = raw;
+      if (d.h !== T.h && fits(r, d.u, T.h, d.id)) d.h = T.h;
+    });
+  }
+  commit(() => {
+    if (k === "inv") d.inv = !!raw;
+    else if (["ports","power","weight","va"].includes(k)) d[k] = Math.max(0, num(raw, 0));
+    else d[k] = String(raw);
+  });
+}
+
+/* ---------- actions ---------- */
+function addDevice(type, pref){
+  const r = R(), h = TYPES[type].h, u = findSpot(r, h, pref);
+  if (!u){ toast(t("noSpace",{h})); return; }
+  const d = mkDev(type, u);
+  commit(() => { r.devices.push(d); sel = d.id; });
+}
+function delDevice(id){
+  const r = R(), d = dev(id); if (!d) return;
+  commit(() => { r.devices = r.devices.filter(x => x.id !== id); r.links = r.links.filter(l => l.a !== id && l.b !== id); if (sel === id) sel = null; });
+}
+function moveSel(delta){
+  const r = R(), d = dev(sel); if (!d) return;
+  if (fits(r, d.u + delta, d.h, d.id)) commit(() => { d.u += delta; });
+}
+const act = {
+  menu(){ openMenu(); },
+  addMenu(){ const r = R(), o = occ(r); let u = 0; for (let x = r.u; x >= 1; x--) if (!o[x]){ u = x; break; } if (!u) return toast(t("rackFull")); openAdd(u); },
+  async install(){ if (!installEvt) return; installEvt.prompt(); try { await installEvt.userChoice; } catch(e){} installEvt = null; renderBar(); },
+  mvUp(){ moveSel(1); revealSel(); }, mvDown(){ moveSel(-1); revealSel(); },
+  newRack(){ const r = newRack(); commit(() => { store.racks.push(r); store.cur = r.id; sel = null; }); openRackSettings(); },
+  dupRack(){ const src = R(); const r = JSON.parse(JSON.stringify(src)); const map = {};
+    r.id = uid("r"); r.name = `${src.name} (${t("copy")})`; r.devices.forEach(d => { const n = uid("d"); map[d.id] = n; d.id = n; });
+    r.links.forEach(l => { l.id = uid("l"); l.a = map[l.a]; l.b = map[l.b]; });
+    commit(() => { store.racks.push(r); store.cur = r.id; sel = null; }); },
+  delRack(){ const r = R(); if (store.racks.length < 2 || !confirm(t("confDelRack",{n:r.name}))) return; commit(() => { store.racks = store.racks.filter(x => x.id !== r.id); sel = null; }); },
+  rackSettings(){ openRackSettings(); },
+  undo, redo,
+  zin(){ setZoom(store.zoom + .1); }, zout(){ setZoom(store.zoom - .1); }, zfit(){ fitZoom(); },
+  sample(){ const r = sampleRack(); commit(() => { store.racks.push(r); store.cur = r.id; sel = null; }); },
+  import(){ importFile(); }, export(){ exportRacks([R()]); },
+  print(){ prepPrint(); window.print(); },
+  pdf(){ savePdf(); },
+  settings(){ openSettings(); },
+  notes(){ openNotes(); },
+  close(){ sel = null; render(); },
+  dupDev(){ const r = R(), d = dev(sel); if (!d) return; const u = findSpot(r, d.h, topU(d) + d.h);
+    if (!u){ toast(t("noSpace",{h:d.h})); return; }
+    const n = Object.assign({}, d, {id:uid("d"), u}); commit(() => { r.devices.push(n); sel = n.id; }); },
+  delDev(){ delDevice(sel); },
+  addLink(){ const r = R(), b = $("#ln-to").value, cable = $("#ln-cab").value, label = $("#ln-lbl").value.trim();
+    if (!b) return; commit(() => r.links.push({id:uid("l"), a:sel, b, cable, label})); },
+  delLink(el){ const r = R(), id = el.dataset.l; commit(() => { r.links = r.links.filter(l => l.id !== id); }); }
+};
+
+/* ---------- zoom & print ---------- */
+function setZoom(z){ store.zoom = Math.min(1.6, Math.max(.4, Math.round(z*10)/10)); persist(); applyZoom(); renderBar(); }
+function fitZoom(){ const st = $("#stage"); store.zoom = Math.max(.4, Math.min(1.6, Math.floor((st.clientWidth - 40) / 1560 * 100) / 100)); persist(); applyZoom(); renderBar(); }
+function applyZoom(){ $("#sheet").style.zoom = isMobile() ? "" : store.zoom; }
+function prepPrint(){
+  const s = $("#sheet"), z = s.style.zoom; s.style.zoom = 1;
+  if (isMobile()){ document.documentElement.style.setProperty("--pz", ".9"); s.style.zoom = z; return; }
+  const w = s.offsetWidth, h = s.offsetHeight; s.style.zoom = z;
+  const pz = Math.min(1, 1530 / w, 1060 / h) * 0.98;
+  document.documentElement.style.setProperty("--pz", pz.toFixed(3));
+}
+window.addEventListener("beforeprint", () => { document.querySelectorAll(".fwrap,.rwrap").forEach(w => w.style.zoom = ""); $("#sheet").style.zoom = ""; prepPrint(); });
+window.addEventListener("afterprint", () => { applyZoom(); fitPanels(); });
+let rzT; window.addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(() => { applyZoom(); fitPanels(); }, 120); });
+
+/* ---------- files ---------- */
+const fname = s => String(s || "rack").replace(/[\\/:*?"<>|]+/g, "_").trim() || "rack";
+async function exportRacks(racks){
+  const data = JSON.stringify({app:"rack-u-layout", v:1, racks}, null, 2);
+  const name = (racks.length === 1 ? fname(racks[0].name) : "racks") + ".rack.json";
+  if (window.rackApp){ const p = await window.rackApp.saveFile({name, data, filters:[{name:"Rack JSON", extensions:["json"]}]}); if (p) toast(t("saved")); return; }
+  try { const f = new File([data], name, {type:"application/json"});
+    if (matchMedia("(hover:none)").matches && navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f], title:name}); return; }
+  } catch(e){ if (e && e.name === "AbortError") return; }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([data], {type:"application/json"})); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+async function importFile(){
+  if (window.rackApp){ const f = await window.rackApp.openFile({filters:[{name:"Rack JSON", extensions:["json"]}]}); if (f) importText(f.data); return; }
+  $("#imp").value = ""; $("#imp").click();
+}
+$("#imp").addEventListener("change", e => { const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => importText(rd.result); rd.readAsText(f); });
+function importText(txt){
+  let j; try { j = JSON.parse(txt); } catch(e){ return toast(t("impBad")); }
+  const list = Array.isArray(j?.racks) ? j.racks : (j && Array.isArray(j.devices) ? [j] : null);
+  if (!list || !list.length) return toast(t("impBad"));
+  const clean = list.map(src => { const r = Object.assign(newRack(), src); r.id = uid("r");
+    r.dims = Object.assign({h:2000,w:600,d:1000}, src.dims); r.specs = Object.assign(newRack().specs, src.specs);
+    const map = {}; r.devices = (src.devices||[]).filter(d => TYPES[d.type]).map(d => { const n = Object.assign(mkDev(d.type, d.u), d); map[d.id] = n.id = uid("d"); return n; });
+    r.links = (src.links||[]).filter(l => map[l.a] && map[l.b]).map(l => Object.assign({}, l, {id:uid("l"), a:map[l.a], b:map[l.b]}));
+    r.notes = Array.isArray(src.notes) ? src.notes.map(String) : []; return r; });
+  commit(() => { store.racks.push(...clean); store.cur = clean[0].id; sel = null; });
+  toast(t("impOk",{n:clean.length}));
+}
+async function savePdf(){
+  prepPrint(); const r = R();
+  if (window.rackApp) { await window.rackApp.savePdf({name: fname(r.name) + ".pdf"}); return; }
+  window.print();
+}
+
+/* ---------- modals ---------- */
+function openModal(html){ const m = $("#modal"); m.innerHTML = `<div class="mbox">${html}</div>`; m.hidden = false; const f = m.querySelector("input,select,textarea,button"); if (f) f.focus(); }
+function closeModal(){ $("#modal").hidden = true; $("#modal").innerHTML = ""; }
+$("#modal").addEventListener("mousedown", e => { if (e.target.id === "modal") closeModal(); });
+function openAdd(u){
+  openModal(`<h3>${t("addTitle",{u})}</h3><div class="tgrid">${TYPE_ORDER.map(k => `<button data-add="${k}" data-u="${u}">${icon(k)}<span>${esc(t("sh_"+k))}</span><small class="muted">${TYPES[k].h}U</small></button>`).join("")}</div>
+  <div class="mfoot"><button class="btn" data-m="close">${t("cancel")}</button></div>`);
+}
+function openMenu(){
+  const M = (a, ic, k, dis) => `<button data-m="act:${a}"${dis?" disabled":""}>${ic} ${t(k)}</button>`;
+  openModal(`<h3>${t("menu")}</h3><div class="menu">
+  ${installEvt?M("install","⤓","install"):""}
+  ${M("newRack","＋","newRack")}${M("dupRack","⧉","dupRack")}${M("rackSettings","⚙","rackSettings")}${M("delRack","🗑","delRack",store.racks.length<2)}
+  ${M("redo","↷","redo",!fut.length)}${M("sample","★","sample")}${M("import","⤓","import")}${M("export","⤒","export")}
+  ${M("pdf","📄","pdf")}${M("settings","🌐","settings")}</div>
+  <div class="mfoot"><button class="btn" data-m="close">${t("close")}</button></div>`);
+}
+function openRackSettings(){
+  const r = R();
+  const f = (k, key, v, type="text") => `<label class="fld"><span>${t(k)}</span><input id="rs-${key}" type="${type}" value="${esc(v)}"></label>`;
+  openModal(`<h3>${t("rackSettings")}</h3>${f("rs_name","name",r.name)}${f("rs_title","title",r.title)}${f("rs_sub","sub",r.subtitle)}
+  <div class="two">${f("rs_u","u",r.u,"number")}${f("rs_load","load",r.load,"number")}</div>
+  <div class="two">${f("rs_h","h",r.dims.h,"number")}${f("rs_w","w",r.dims.w,"number")}</div>
+  <div class="two">${f("rs_d","d",r.dims.d,"number")}<span></span></div>
+  <div class="mfoot"><button class="btn" data-m="close">${t("cancel")}</button><button class="btn pri" data-m="rsSave">${t("save")}</button></div>`);
+}
+function saveRackSettings(){
+  const r = R(), v = id => $("#rs-"+id).value;
+  const u = Math.max(4, Math.min(60, Math.round(num(v("u"), r.u))));
+  const hi = r.devices.reduce((m, d) => Math.max(m, topU(d)), 0);
+  if (hi > u){ toast(t("rs_uErr",{u,top:hi})); return; }
+  commit(() => {
+    if (r.specs.type === t("spd_type",{u:r.u})) r.specs.type = t("spd_type",{u});
+    const sub = v("sub"); r.subtitle = sub === t("defSub",{u:r.u}) ? t("defSub",{u}) : sub;
+    r.name = v("name").trim() || r.name; r.title = v("title");
+    r.u = u; r.load = Math.max(0, num(v("load"), r.load));
+    r.dims = {h:Math.max(1, num(v("h"), r.dims.h)), w:Math.max(1, num(v("w"), r.dims.w)), d:Math.max(1, num(v("d"), r.dims.d))};
+  });
+  closeModal();
+}
+function openNotes(){
+  openModal(`<h3>${t("notesEdit")}</h3><label class="fld"><span>${t("notesHint")}</span><textarea id="nt" rows="9">${esc(R().notes.join("\n"))}</textarea></label>
+  <div class="mfoot"><button class="btn" data-m="close">${t("cancel")}</button><button class="btn pri" data-m="ntSave">${t("save")}</button></div>`);
+}
+function openSettings(){
+  openModal(`<h3>${t("settings")}</h3><label class="fld"><span>${t("lang")}</span><select id="lang">${LANGS.map(([k,l]) => `<option value="${k}"${k===store.lang?" selected":""}>${l}</option>`).join("")}</select></label>
+  <p class="muted" style="font-size:12px">${t("about")}</p>
+  <div class="btns"><button class="btn" data-m="expAll">⤒ ${t("exportAll")}</button></div>
+  <p class="muted" style="font-size:11.5px">${t("version")}: ${VERSION}</p>
+  <div class="mfoot"><button class="btn pri" data-m="close">${t("close")}</button></div>`);
+}
+$("#modal").addEventListener("change", e => { if (e.target.id === "lang"){ store.lang = e.target.value; persist(); render(); openSettings(); } });
+$("#modal").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.add){ closeModal(); addDevice(b.dataset.add, +b.dataset.u); return; }
+  const m = b.dataset.m;
+  if (m === "close") closeModal();
+  else if (m && m.startsWith("act:")){ closeModal(); act[m.slice(4)](); }
+  else if (m === "rsSave") saveRackSettings();
+  else if (m === "ntSave"){ const v = $("#nt").value.split("\n").map(s => s.trim()).filter(Boolean); closeModal(); commit(() => { R().notes = v; }); }
+  else if (m === "expAll"){ exportRacks(store.racks); }
+});
+$("#modal").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.tagName === "INPUT" && $("#rs-name")) saveRackSettings(); });
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+  const a = e.target.closest("[data-a]");
+  if (a && !a.disabled && act[a.dataset.a] && !a.closest("#modal")){ act[a.dataset.a](a); return; }
+  const slot = e.target.closest(".slot"); if (slot){ openAdd(+slot.dataset.u); return; }
+  const pick = e.target.closest(".rear .dv, .dc[data-id], .cl[data-id], .inv tr[data-id]");
+  if (pick){ sel = pick.dataset.id; render(); revealSel(); }
+});
+document.addEventListener("change", e => {
+  const el = e.target;
+  if (el.id === "rk-sel"){ store.cur = el.value; sel = null; persist(); render(); return; }
+  if (el.dataset.f){ const r = R(), v = el.value.replace(/\s*\n\s*/g, " "); commit(() => { r[el.dataset.f] = v; }); return; }
+  if (el.dataset.spec){ const r = R(), v = el.value; commit(() => { r.specs[el.dataset.spec] = v; }); return; }
+  if (el.closest("#drawer") && el.dataset.k) updateDev(el.dataset.k, el.type === "checkbox" ? el.checked : el.value);
+});
+document.addEventListener("input", e => { if (e.target.matches(".hdr textarea")) growHdr(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.matches(".hdr textarea")){ e.preventDefault(); e.target.blur(); return; }
+  const typing = /INPUT|TEXTAREA|SELECT/.test(e.target.tagName);
+  const mod = e.ctrlKey || e.metaKey;
+  if (e.key === "Escape"){ if (!$("#modal").hidden) closeModal(); else if (sel){ sel = null; render(); } return; }
+  if (!$("#modal").hidden) return;
+  if (mod && e.key.toLowerCase() === "p"){ e.preventDefault(); savePdf(); return; }
+  if (typing) return;
+  if (mod && e.key.toLowerCase() === "z"){ e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+  if (mod && e.key.toLowerCase() === "y"){ e.preventDefault(); redo(); return; }
+  if (!sel) return;
+  if (e.key === "Delete" || e.key === "Backspace"){ e.preventDefault(); delDevice(sel); }
+  else if (e.key === "ArrowUp"){ e.preventDefault(); moveSel(1); }
+  else if (e.key === "ArrowDown"){ e.preventDefault(); moveSel(-1); }
+});
+$("#stage").addEventListener("wheel", e => { if (e.ctrlKey){ e.preventDefault(); setZoom(store.zoom + (e.deltaY < 0 ? .1 : -.1)); } }, {passive:false});
+
+/* ---------- drag & drop (palette → rack, move inside rack) ---------- */
+let drag = null;
+document.addEventListener("pointerdown", e => {
+  if (e.button !== 0) return;
+  const pal = e.target.closest(".pal-item"), dv = e.target.closest(".front .dv");
+  if (pal) drag = {kind:"new", type:pal.dataset.type, h:TYPES[pal.dataset.type].h, grab:0, label:t("sh_"+pal.dataset.type)};
+  else if (dv){ const d = dev(dv.dataset.id), rc = dv.getBoundingClientRect();
+    drag = {kind:"move", id:d.id, h:d.h, grab:Math.min(d.h-1, Math.floor((e.clientY - rc.top) / (rc.height / d.h))), label:d.name}; }
+  else return;
+  drag.x0 = e.clientX; drag.y0 = e.clientY; drag.started = false; drag.target = 0;
+  if (e.pointerType === "touch"){
+    // Touch: a quick tap selects, a finger moving right away scrolls the page, press-and-hold (~0.45 s) picks the device up.
+    drag.pending = true; const me = drag;
+    drag.timer = setTimeout(() => { if (drag !== me) return; me.pending = false; me.armed = true; try { navigator.vibrate && navigator.vibrate(25); } catch(_){}
+      if (me.kind === "move") document.querySelector(`.front .dv[data-id="${me.id}"]`)?.classList.add("armed"); }, 450);
+    return;
+  }
+  e.preventDefault();
+});
+function endDrag(){ if (!drag) return; clearTimeout(drag.timer); drag.ghost?.remove(); document.querySelector(".front .drop")?.remove();
+  document.querySelectorAll(".dv.dragging,.dv.armed").forEach(x => x.classList.remove("dragging","armed")); drag = null; }
+document.addEventListener("pointercancel", endDrag);
+document.addEventListener("touchmove", e => { if (drag && drag.armed) e.preventDefault(); }, {passive:false});
+document.addEventListener("contextmenu", e => { if (e.target.closest(".dv,.pal-item")) e.preventDefault(); });
+document.addEventListener("pointermove", e => {
+  if (!drag) return;
+  if (drag.pending){ if (Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) > 8) endDrag(); return; }
+  if (!drag.started){ if (!drag.armed && Math.hypot(e.clientX - drag.x0, e.clientY - drag.y0) < 5) return;
+    drag.started = true; drag.ghost = document.createElement("div"); drag.ghost.className = "ghost"; document.body.appendChild(drag.ghost);
+    if (drag.kind === "move") document.querySelector(`.front .dv[data-id="${drag.id}"]`)?.classList.add("dragging"); }
+  drag.ghost.style.left = (e.clientX + 14) + "px"; drag.ghost.style.top = (e.clientY + 10) + "px";
+  const r = R(), bay = document.querySelector(".front .bay"), br = bay.getBoundingClientRect();
+  let mark = bay.querySelector(".drop");
+  const inside = e.clientX > br.left - 60 && e.clientX < br.right + 60 && e.clientY > br.top - 30 && e.clientY < br.bottom + 30;
+  if (!inside){ mark?.remove(); drag.target = 0; drag.ghost.textContent = drag.label; return; }
+  const uhpx = br.height / r.u;
+  const row = Math.floor((e.clientY - br.top) / uhpx);
+  let top = r.u - row + drag.grab; top = Math.max(drag.h, Math.min(r.u, top));
+  const b = top - drag.h + 1, ok = fits(r, b, drag.h, drag.kind === "move" ? drag.id : null);
+  drag.target = ok ? b : 0;
+  if (!mark){ mark = document.createElement("div"); mark.className = "drop"; bay.appendChild(mark); }
+  mark.classList.toggle("bad", !ok); mark.style.bottom = (b - 1) * UH + "px"; mark.style.height = drag.h * UH + "px";
+  drag.ghost.textContent = `${drag.label} → ${drag.h > 1 ? `U${b}–U${top}` : `U${b}`}`;
+});
+document.addEventListener("pointerup", e => {
+  if (!drag) return; const d = drag; endDrag();
+  if (!d.started){ if (d.kind === "new") addDevice(d.type); else { sel = d.id; render(); revealSel(); } return; }
+  if (!d.target){ if (d.kind === "move") render(); else toast(t("badPos")); return; }
+  const r = R();
+  if (d.kind === "new"){ const nd = mkDev(d.type, d.target); commit(() => { r.devices.push(nd); sel = nd.id; }); }
+  else { const x = dev(d.id); if (x.u !== d.target) commit(() => { x.u = d.target; sel = x.id; }); else { sel = x.id; render(); } }
+});
+
+let toastT; function toast(m){ const el = $("#toast"); el.textContent = m; el.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("on"), 2600); }
+
+/* ---------- start ---------- */
+if (store.fresh){ delete store.fresh; const r = sampleRack(); store.racks.push(r); store.cur = r.id; }
+fix(); persist(); render();
+if (!isMobile() && store.zoom === 1 && $("#stage").clientWidth < 1600) fitZoom();
+
+/* ---------- installable web app (only when served over http/https, not in the desktop build) ---------- */
+if (/^https?:$/.test(location.protocol)){
+  const lk = (rel, href, x) => { const l = document.createElement("link"); l.rel = rel; l.href = href; if (x) Object.assign(l, x); document.head.appendChild(l); };
+  lk("manifest", "manifest.webmanifest"); lk("apple-touch-icon", "icons/apple-touch-icon.png"); lk("icon", "icons/icon-192.png", {type:"image/png"});
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); installEvt = e; renderBar(); });
+  window.addEventListener("appinstalled", () => { installEvt = null; renderBar(); });
+  if ("serviceWorker" in navigator){
+    const had = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+    navigator.serviceWorker.addEventListener("controllerchange", () => { if (had) toast(t("updated")); });
+  }
+}
+</script>
+</body>
+</html>
